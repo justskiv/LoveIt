@@ -85,12 +85,13 @@
 
     ul {
       ul {
-        display: none;
+        display: block;
+        // was: display: none;
       }
 
-      .has-active > ul {
-        display: block;
-      }
+      // was: .has-active > ul {
+      //   display: block;
+      // }
     }
 
     a.active {
