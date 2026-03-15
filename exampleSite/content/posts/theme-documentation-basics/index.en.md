@@ -29,10 +29,10 @@ Discover what the Hugo - **LoveIt** theme is all about and the core-concepts beh
 
 Thanks to the simplicity of Hugo, [Hugo](https://gohugo.io/) is the only dependency of this theme.
 
-Just install latest **extended edition** of [:(far fa-file-archive fa-fw): Hugo (> 0.128.0)](https://gohugo.io/getting-started/installing/) for your OS (**Windows**, **Linux**, **macOS**).
+Just install latest edition of [:(far fa-file-archive fa-fw): Hugo](https://gohugo.io/getting-started/installing/) for your OS (**Windows**, **Linux**, **macOS**).
 
-{{< admonition note "Why need to use Hugo **extended edition**" >}}
-Since some features of this theme need to processes :(fab fa-sass fa-fw): SCSS to :(fab fa-css3 fa-fw): CSS, you need to use Hugo **extended edition** for correct rendering.
+{{< admonition note "When you need to use Hugo extended edition?" false >}}
+When you want [style customization](#style-customization), you need to use the Hugo **extended edition** for correct rendering.
 
 ![Hugo extended edition](hugo-extended-edition.png "Hugo extended edition")
 {{< /admonition >}}
@@ -52,9 +52,9 @@ cd my_website
 
 ### 2.2 Install the Theme
 
-The **LoveIt** theme’s repository is: [https://github.com/dillonzq/LoveIt](https://github.com/dillonzq/LoveIt).
+The **LoveIt** theme's repository is: [https://github.com/dillonzq/LoveIt](https://github.com/dillonzq/LoveIt).
 
-You can download the [latest release :(far fa-file-archive fa-fw): .zip file](https://github.com/dillonzq/LoveIt/releases) of the theme and extract it in the `themes` directory.
+You can download the [release :(far fa-file-archive fa-fw): .zip file](https://github.com/dillonzq/LoveIt/releases) of the theme and extract it in the `themes` directory.
 
 Alternatively, clone this repository to the `themes` directory:
 
@@ -68,6 +68,16 @@ Or, create an empty git repository and make this repository a submodule of your 
 git init
 git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 ```
+
+{{< admonition note "LoveIt theme's compatibility" >}}
+
+| LoveIt branch or version | Supported Hugo versions |
+|:-------------------------|:-----------------------:|
+| master(Unstable)         |        ≥ 0.128.0        |
+| **0.3.X(Recommended)**   |    0.128.0 - 0.144.2    |
+| 0.2.X(Outdated)          |    0.68.0 - 0.127.0     |
+
+{{< /admonition >}}
 
 ### 2.3 Basic Configuration {#basic-configuration}
 
@@ -208,8 +218,6 @@ languageName = "English"
 # whether to include Chinese/Japanese/Korean
 hasCJKLanguage = false
 
-# google analytics code [UA-XXXXXXXX-X]
-googleAnalytics = ""
 # copyright description used only for seo schema
 copyright = ""
 
@@ -511,7 +519,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # whether to enable the table of the contents
       enable = true
       # {{< version 0.2.9 >}} whether to keep the static table of the contents in front of the post
-      keepStatic = true
+      keepStatic = false
       # whether to make the table of the contents in the sidebar automatically collapsed
       auto = true
     # {{< version 0.2.0 changed >}} {{< link "https://katex.org/" KaTeX >}} mathematical formulas
@@ -821,7 +829,6 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   page = ["HTML", "MarkDown"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
 ```
 
 {{< admonition >}}
@@ -899,11 +906,12 @@ into `/static`. They’re easily created via [https://realfavicongenerator.net/]
 
 Customize `browserconfig.xml` and `site.webmanifest` to set theme-color and background-color.
 
-### 3.3 Style Customization
+### 3.3 Style Customization {#style-customization}
 
 {{< version 0.2.8 changed >}}
 
-{{< admonition >}}
+{{< admonition note "Hugo extended version is necessary" >}}
+Since Hugo need to processes :(fab fa-sass fa-fw): SCSS to :(fab fa-css3 fa-fw): CSS,
 Hugo **extended** version is necessary for the style customization.
 {{< /admonition >}}
 
@@ -932,31 +940,32 @@ In `assets/css/_custom.scss`, you can add some css style code to customize the s
 
 {{< version 0.2.10 changed >}}
 
-| Language             | Hugo Code | HTML `lang` Attribute | Theme Docs                    | Lunr.js Support               |
-|:-------------------- |:---------:|:---------------------:|:-----------------------------:|:-----------------------------:|
-| English              | `en`      | `en`                  | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
-| Simplified Chinese   | `zh-cn`   | `zh-CN`               | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
-| Traditional Chinese  | `zh-tw`   | `zh-TW`               | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| French               | `fr`      | `fr`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Polish               | `pl`      | `pl`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Portuguese (Brazil)  | `pt-br`   | `pt-BR`               | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Italian              | `it`      | `it`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Spanish              | `es`      | `es`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| German               | `de`      | `de`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| German               | `de`      | `de`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Serbian              | `sr`      | `sr`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Russian              | `ru`      | `ru`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Romanian             | `ro`      | `ro`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Vietnamese           | `vi`      | `vi`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Arabic               | `ar`      | `ar`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Catalan              | `ca`      | `ca`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Thai                 | `th`      | `th`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Telugu               | `te`      | `te`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Indonesian           | `id`      | `id`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Turkish              | `tr`      | `tr`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Korean               | `ko`      | `ko`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Hindi                | `hi`      | `hi`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Dutch                | `nl`      | `nl`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
+| Language            | Hugo Code | HTML `lang` Attribute |          Theme Docs           |        Lunr.js Support        |
+|:--------------------|:---------:|:---------------------:|:-----------------------------:|:-----------------------------:|
+| English             |   `en`    |         `en`          | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
+| Simplified Chinese  |  `zh-cn`  |        `zh-CN`        | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
+| Traditional Chinese |  `zh-tw`  |        `zh-TW`        |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| French              |   `fr`    |         `fr`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Polish              |   `pl`    |         `pl`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Portuguese (Brazil) |  `pt-br`  |        `pt-BR`        |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Italian             |   `it`    |         `it`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Spanish             |   `es`    |         `es`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| German              |   `de`    |         `de`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| German              |   `de`    |         `de`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Serbian             |   `sr`    |         `sr`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Russian             |   `ru`    |         `ru`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Romanian            |   `ro`    |         `ro`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Vietnamese          |   `vi`    |         `vi`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Arabic              |   `ar`    |         `ar`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Catalan             |   `ca`    |         `ca`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Thai                |   `th`    |         `th`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Telugu              |   `te`    |         `te`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Indonesian          |   `id`    |         `id`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Turkish             |   `tr`    |         `tr`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Korean              |   `ko`    |         `ko`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Hindi               |   `hi`    |         `hi`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| Dutch               |   `nl`    |         `nl`          |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| Bengali             |   `hi`    |         `hi`          |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
 
 ### 4.2 Basic Configuration
 

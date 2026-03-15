@@ -29,10 +29,10 @@ toc:
 
 由于 Hugo 提供的便利性, [Hugo](https://gohugo.io/) 是这个主题唯一的依赖.
 
-直接安装满足你操作系统 (**Windows**, **Linux**, **macOS**) 的最新 **extended** 版本 [:(far fa-file-archive fa-fw): Hugo (> 0.128.0)](https://gohugo.io/getting-started/installing/).
+直接安装满足你操作系统 (**Windows**, **Linux**, **macOS**) 的最新版本 [:(far fa-file-archive fa-fw): Hugo](https://gohugo.io/getting-started/installing/).
 
-{{< admonition note "为什么需要使用 Hugo extended 版本" >}}
-由于这个主题的一些特性需要将 :(fab fa-sass fa-fw): SCSS 转换为 :(fab fa-css3 fa-fw): CSS, 你需要使用 Hugo **extended** 版本来获得正确的渲染效果.
+{{< admonition note "什么时候需要使用 Hugo extended 版本?" false >}}
+当你需要[自定义样式](#style-customization)时, 你要使用 Hugo **extended** 版本来获得正确的渲染效果.
 
 ![Hugo extended 版本](hugo-extended-edition.png "Hugo extended 版本")
 {{< /admonition >}}
@@ -54,7 +54,7 @@ cd my_website
 
 **LoveIt** 主题的仓库是: [https://github.com/dillonzq/LoveIt](https://github.com/dillonzq/LoveIt).
 
-你可以下载主题的 [最新版本 :(far fa-file-archive fa-fw): .zip 文件](https://github.com/dillonzq/LoveIt/releases) 并且解压放到 `themes` 目录.
+你可以下载主题的 [发布版本 :(far fa-file-archive fa-fw): .zip 文件](https://github.com/dillonzq/LoveIt/releases) 并且解压放到 `themes` 目录.
 
 另外, 也可以直接把这个主题克隆到 `themes` 目录:
 
@@ -68,6 +68,16 @@ git clone https://github.com/dillonzq/LoveIt.git themes/LoveIt
 git init
 git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 ```
+
+{{< admonition note "主题的兼容性" >}}
+
+| 分支或版本         |    支持的 Hugo 版本    |
+|:--------------|:-----------------:|
+| master(不稳定)   |     ≥ 0.128.0     |
+| **0.3.X(推荐)** | 0.128.0 - 0.144.2 |
+| 0.2.X(过时)     | 0.68.0 - 0.127.0  |
+
+{{< /admonition >}}
 
 ### 2.3 基础配置 {#basic-configuration}
 
@@ -210,8 +220,6 @@ languageName = "简体中文"
 # 是否包括中日韩文字
 hasCJKLanguage = true
 
-# 谷歌分析代号 [UA-XXXXXXXX-X]
-googleAnalytics = ""
 # 版权描述，仅仅用于 SEO
 copyright = ""
 
@@ -513,7 +521,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # 是否使用目录
       enable = true
       # {{< version 0.2.9 >}} 是否保持使用文章前面的静态目录
-      keepStatic = true
+      keepStatic = false
       # 是否使侧边目录自动折叠展开
       auto = true
     # {{< version 0.2.0 >}} 代码配置
@@ -823,7 +831,6 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   page = ["HTML", "MarkDown"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
 ```
 
 {{< admonition >}}
@@ -902,12 +909,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 
 可以自定义 `browserconfig.xml` 和 `site.webmanifest` 文件来设置 theme-color 和 background-color.
 
-### 3.3 自定义样式
+### 3.3 自定义样式 {#style-customization}
 
 {{< version 0.2.8 changed >}}
 
-{{< admonition >}}
-Hugo **extended** 版本对于自定义样式是必需的.
+{{< admonition note "Hugo extended 版本是必需的" >}}
+由于需要将 :(fab fa-sass fa-fw): SCSS 转换为 :(fab fa-css3 fa-fw): CSS, Hugo **extended** 版本对于自定义样式是必需的.
 {{< /admonition >}}
 
 通过定义自定义 `.scss` 样式文件, **LoveIt** 主题支持可配置的样式.
@@ -935,30 +942,31 @@ $code-font-family: Fira Mono, Source Code Pro, Menlo, Consolas, Monaco, monospac
 
 {{< version 0.2.10 changed >}}
 
-| 语言 | Hugo 代码 | HTML `lang` 属性 | 主题文档 | Lunr.js 支持 |
-|:---- |:----:|:----:|:----:|:----:|
-| 英语 | `en` | `en` | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
-| 简体中文 | `zh-cn` | `zh-CN` | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
-| 繁体中文 | `zh-tw` | `zh-TW` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 法语 | `fr` | `fr` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 波兰语 | `pl` | `pl` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 葡萄牙语(巴西) | `pt-br` | `pt-BR` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 意大利语 | `it` | `it` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 西班牙语 | `es` | `es` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 德语 | `de` | `de` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 塞尔维亚语 | `pl` | `pl` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 俄语 | `ru` | `ru` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 罗马尼亚语 | `ro` | `ro` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 越南语 | `vi` | `vi` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 阿拉伯语 | `ar` | `ar` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 加泰罗尼亚语 | `ca` | `ca` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 泰语 | `th` | `th` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 泰卢固语 | `te` | `te` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 印尼语 | `id` | `id` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 土耳其语 | `tr` | `tr` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
-| 韩语 | `ko` | `ko` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 印地语 | `hi` | `hi` | :(far fa-square fa-fw): | :(far fa-square fa-fw): |
-| 荷兰语 | `nl` | `nl` | :(far fa-square fa-fw): | :(far fa-check-square fa-fw): |
+| 语言       | Hugo 代码 | HTML `lang` 属性 |             主题文档              |          Lunr.js 支持           |
+|:---------|:-------:|:--------------:|:-----------------------------:|:-----------------------------:|
+| 英语       |  `en`   |      `en`      | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
+| 简体中文     | `zh-cn` |    `zh-CN`     | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
+| 繁体中文     | `zh-tw` |    `zh-TW`     |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 法语       |  `fr`   |      `fr`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 波兰语      |  `pl`   |      `pl`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 葡萄牙语(巴西) | `pt-br` |    `pt-BR`     |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 意大利语     |  `it`   |      `it`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 西班牙语     |  `es`   |      `es`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 德语       |  `de`   |      `de`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 塞尔维亚语    |  `pl`   |      `pl`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 俄语       |  `ru`   |      `ru`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 罗马尼亚语    |  `ro`   |      `ro`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 越南语      |  `vi`   |      `vi`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 阿拉伯语     |  `ar`   |      `ar`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 加泰罗尼亚语   |  `ca`   |      `ca`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 泰语       |  `th`   |      `th`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 泰卢固语     |  `te`   |      `te`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 印尼语      |  `id`   |      `id`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 土耳其语     |  `tr`   |      `tr`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 韩语       |  `ko`   |      `ko`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 印地语      |  `hi`   |      `hi`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
+| 荷兰语      |  `nl`   |      `nl`      |    :(far fa-square fa-fw):    | :(far fa-check-square fa-fw): |
+| 孟加拉语     |  `bn`   |      `bn`      |    :(far fa-square fa-fw):    |    :(far fa-square fa-fw):    |
 
 ### 4.2 基本配置
 

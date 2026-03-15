@@ -24,9 +24,6 @@ languageName = "English"
 # 是否包括中日韩文字
 hasCJKLanguage = false
 
-# google analytics code [UA-XXXXXXXX-X]
-# 谷歌分析代号 [UA-XXXXXXXX-X]
-googleAnalytics = ""
 # copyright description used only for seo schema
 # 版权描述，仅仅用于 SEO
 copyright = ""
@@ -526,7 +523,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         recordIP = true
         highlight = true
         enableQQ = false
-        serverURLs = "https://leancloud.hugoloveit.com"
+        serverURLs = "https://valine.hugoloveit.com"
         # emoji data file name, default is "google.yml"
         # ["apple.yml", "google.yml", "facebook.yml", "twitter.yml"]
         # located in "themes/LoveIt/assets/lib/valine/emoji/" directory
@@ -791,7 +788,6 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   page = ["HTML", "MarkDown"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
 
 # Multilingual
 # 多语言
@@ -862,9 +858,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         highlightTag = "em"
         absoluteURL = false
         [languages.en.params.search.algolia]
-          index = "index.en"
-          appID = "PASDMWALPK"
-          searchKey = "b42948e51daaa93df92381c8e2ac0f93"
+          index = "index"
+          appID = "4D1IDY8JU6"
+          searchKey = "05332ac5ed76655a511f0da583a9afac"
       [languages.en.params.home]
         rss = 10
         [languages.en.params.home.profile]
@@ -955,9 +951,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         highlightTag = "em"
         absoluteURL = false
         [languages.zh-cn.params.search.algolia]
-          index = "index.zh-cn"
-          appID = "PASDMWALPK"
-          searchKey = "b42948e51daaa93df92381c8e2ac0f93"
+          index = "index"
+          appID = "GZT24PWKNT"
+          searchKey = "634ab679e825b815de2663de38908f9d"
       [languages.zh-cn.params.home]
         rss = 10
         [languages.zh-cn.params.home.profile]
