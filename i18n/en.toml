@@ -136,6 +136,15 @@ other = "Back"
 [home]
 other = "Home"
 
+[postNavigation]
+other = "Post navigation"
+
+[prevPost]
+other = "Previous post"
+
+[nextPost]
+other = "Next post"
+
 [readMore]
 other = "Read More"
 # === posts/single.html ===

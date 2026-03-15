@@ -140,6 +140,15 @@ other = "Назад"
 [home]
 other = "Домой"
 
+[postNavigation]
+other = "Навигация по статьям"
+
+[prevPost]
+other = "Предыдущая статья"
+
+[nextPost]
+other = "Следующая статья"
+
 [readMore]
 other = "Читать больше"
 # === posts/single.html ===
