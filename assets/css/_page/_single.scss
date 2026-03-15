@@ -235,6 +235,35 @@
         margin: 0 auto;
         overflow: hidden;
       }
+
+      &.image-float-right,
+      &.image-float-left {
+        max-width: 45%;
+        margin-bottom: 1em;
+
+        .image-caption:not(:empty) {
+          min-width: auto;
+          max-width: 100%;
+        }
+
+        @media only screen and (max-width: 680px) {
+          float: none;
+          max-width: 100%;
+          margin: .5rem;
+        }
+      }
+
+      &.image-float-right {
+        float: right;
+        margin-left: 1.5em;
+        margin-right: 0;
+      }
+
+      &.image-float-left {
+        float: left;
+        margin-right: 1.5em;
+        margin-left: 0;
+      }
     }
 
     blockquote {

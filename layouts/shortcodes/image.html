@@ -17,8 +17,20 @@
 
 {{- $options = dict "Resources" .Page.Resources | merge $options -}}
 
+{{- $float := "" -}}
+{{- if .IsNamedParams -}}
+    {{- $float = .Get "float" | default "" -}}
+{{- end -}}
+{{- $figureClass := slice -}}
+{{- with cond .IsNamedParams (.Get "class") "" -}}
+    {{- $figureClass = $figureClass | append . -}}
+{{- end -}}
+{{- with $float -}}
+    {{- $figureClass = $figureClass | append (printf "image-float-%s" .) -}}
+{{- end -}}
+
 {{- with $caption -}}
-    <figure{{ with cond $.IsNamedParams ($.Get "class") "" }} class="{{ . }}"{{ end }}>
+    <figure{{ with $figureClass }} class="{{ delimit . " " }}"{{ end }}>
         {{- partial "plugin/img.html" $options -}}
         <figcaption class="image-caption">
             {{- . | safeHTML -}}
