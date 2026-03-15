@@ -49,7 +49,7 @@ telegram:
 # 007: Medium
 medium:
   Weight: 7
-  Prefix: https://medium.com/
+  Prefix: https://medium.com/@
   Title: Medium
   Icon:
     Class: fab fa-medium fa-fw
@@ -576,6 +576,38 @@ rootme:
   Prefix: https://www.root-me.org/
   Icon:
     Src: svg/icons/rootme.svg
+
+# 073: Malt
+malt:
+  Weight: 73
+  Prefix: https://www.malt.fr/profile/
+  Title: Malt
+  Icon:
+    Src: svg/icons/malt.svg
+
+# 074: TikTok
+tiktok:
+  Weight: 74
+  Url: https://www.tiktok.com/
+  Title: TikTok
+  Icon:
+    Simpleicons: tiktok
+
+# 075: TryHackMe
+tryhackme:
+  Weight: 75
+  Title: TryHackMe
+  Prefix: https://tryhackme.com/p/
+  Icon:
+    Simpleicons: Tryhackme
+
+# 076: Codeberg
+codeberg:
+  Weight: 76
+  Title: Codeberg
+  Prefix: https://codeberg.org/
+  Icon:
+    Simpleicons: codeberg
 
 # Phone
 phone:

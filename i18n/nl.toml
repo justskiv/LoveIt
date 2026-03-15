@@ -1,18 +1,18 @@
-# Translations for German
-# Übersetzung auf Deutsch
+# Translations for Dutch
+# Vertalingen voor het Nederlands
 # https://gohugo.io/content-management/multilingual/#translation-of-strings
 
 # === baseof ==
 [backToTop]
-other = "Nach oben"
+other = "Terug naar boven"
 
 [viewComments]
-other = "Kommentare anzeigen"
+other = "Bekijk opmerkingen"
 # === baseof ==
 
 # === Post ===
 [posts]
-other = "Artikel"
+other = "Berichten"
 # === Post ===
 
 # === Taxonomy ===
@@ -26,177 +26,174 @@ other = "Tag"
 other = "Tags"
 
 [category]
-other = "Kategorie"
+other = "Categorie"
 
 [categories]
-other = "Kategorien"
+other = "Categorieën"
 # === Taxonomy ===
 
 # === Pagination ===
 [more]
-other = "Mehr"
+other = "Meer"
 # === Pagination ===
 
 # === partials/header.html ===
 [selectLanguage]
-other = "Sprache wählen"
+other = "Selecteer Taal"
 
 [switchTheme]
-other = "Darstellung ändern"
+other = "Verander Thema"
 # === partials/header.html ===
 
 # === partials/footer.html ===
 [poweredBySome]
-other = "Realisiert durch {{ .Hugo }} | Thema - {{ .Theme }}"
+other = "Aangedreven door {{ .Hugo }} | Thema - {{ .Theme }}"
 # === partials/footer.html ===
 
 # === partials/comment.html ===
 [valineLang]
-other = "en"
+other = "nl"
 
 [valinePlaceholder]
-other = "Ihr Kommentar ..."
+other = "Jouw opmerking"
 
 [facebookLanguageCode]
-other = "de_DE"
+other = "nl_nl"
 
 [giscusLang]
-other = "de"
+other = "nl"
 # === partials/comment.html ===
 
 # === partials/assets.html ===
 [search]
-other = "Suche"
+other = "Zoeken"
 
 [searchPlaceholder]
-other = "Suche nach Titel und Inhalt ..."
+other = "Zoek naar titels of andere inhoud..."
 
 [clear]
-other = "Leeren"
+other = "Wissen"
 
 [cancel]
-other = "Abbrechen"
+other = "Annuleren"
 
 [noResultsFound]
-other = "Keine Ergebnisse gefunden"
+other = "Geen resultaten gevonden"
 
 [lunrLanguageCode]
-other = "de"
-
-[lunrLanguageLib]
-other = "lib/lunr/lunr.de.js"
+other = "nl"
 
 [copyToClipboard]
-other = "In Zwischenablage kopieren"
+other = "Kopieer naar klembord"
 
 [cookieconsentMessage]
-other = "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern."
+other = "Deze website gebruikt cookies om de ervaring beter te maken."
 
 [cookieconsentDismiss]
-other = "Zustimmen"
+other = "Begrepen!"
 
 [cookieconsentLink]
-other = "Erfahren Sie mehr"
+other = "Meer informatie"
 # === partials/assets.html ===
 
 # === partials/plugin/share.html ===
 [shareOn]
-other = "Teilen auf"
+other = "Delen op"
 # === partials/plugin/share.html ===
 
 # === posts/single.html ===
 [contents]
-other = "Inhalt"
+other = "Content"
 
 [publishedOnDate]
-other = "Veröffentlicht am {{ .Date }}"
+other = "gepubliceerd op {{ .Date }}"
 
 [includedInCategories]
-other = "Enthalten in {{ .Categories }}"
+other = "inbegrepen in {{ .Categories }}"
 
 [wordCount]
-one = "Ein Wort"
-other = "{{ .Count }} Wörter"
+one = "Één woord"
+other = "{{ .Count }} woorden"
 
 [readingTime]
-one = "Eine Minute"
-other = "{{ .Count }} Minuten"
+one = "Één minuut"
+other = "{{ .Count }} minuten"
 
 [views]
-other = "Aufrufe"
+other = "Aantal keer bekeken"
 
 [author]
-other = "Autor"
+other = "Auteur"
 
 [updatedOnDate]
-other = "Aktualisiert am {{ .Date }}"
+other = "Aangepast op {{ .Date }}"
 
 [readMarkdown]
-other = "Markdown anzeigen"
+other = "Lees markdown"
 
 [back]
-other = "Zurück"
+other = "Terug"
 
 [home]
-other = "Startseite"
+other = "Homepagina"
 
 [readMore]
-other = "Weiterlesen"
+other = "Lees Meer"
 # === posts/single.html ===
 
 # === 404.html ===
 [pageNotFound]
-other = "Seite nicht gefunden"
+other = "Pagina niet gevonden"
 
 [pageNotFoundText]
-other = "Leider konnte die von Ihnen angeforderte Seite nicht aufgerufen werden."
+other = "De pagina die je zocht bestaat niet, Sorry!"
 # === 404.html ===
 
 # === shortcodes/admonition.html ===
 [note]
-other = "Notiz"
+other = "Opmerking"
 
 [abstract]
-other = "Kurzfassung"
+other = "Abstract"
 
 [info]
 other = "Info"
 
 [tip]
-other = "Tipp"
+other = "Tip"
 
 [success]
-other = "Erfolg"
+other = "Gelukt"
 
 [question]
-other = "Frage"
+other = "Vraag"
 
 [warning]
-other = "Warnung"
+other = "Waarschuwing"
 
 [failure]
-other = "Fehler"
+other = "Fout"
 
 [danger]
-other = "Vorsicht"
+other = "Gevaar"
 
 [bug]
 other = "Bug"
 
 [example]
-other = "Beispiel"
+other = "Voorbeeld"
 
 [quote]
-other = "Zitat"
+other = "Citaat"
 # === shortcodes/admonition.html ===
 
 # === shortcodes/version.html ===
 [new]
-other = "NEU"
+other = "NIEUW"
 
 [changed]
-other = "GEÄNDERT"
+other = "VERANDERD"
 
 [deleted]
-other = "GELÖSCHT"
+other = "VERWIJDERD"
 # === shortcodes/version.html ===
