@@ -156,10 +156,10 @@
     }
 
     .nav-card:only-child {
-      flex-basis: 100%;
+      flex: 0 1 calc(50% - 0.75rem);
 
       &.next {
-        text-align: left;
+        margin-left: auto;
       }
     }
 
