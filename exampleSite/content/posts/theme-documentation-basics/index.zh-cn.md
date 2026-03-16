@@ -71,10 +71,10 @@ git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 
 {{< admonition note "主题的兼容性" >}}
 
-| 分支或版本         |    支持的 Hugo 版本    |
+| LoveIt 分支或版本  |    支持的 Hugo 版本    |
 |:--------------|:-----------------:|
 | master(不稳定)   |     ≥ 0.128.0     |
-| **0.3.X(推荐)** | 0.128.0 - 0.144.2 |
+| **0.3.X(推荐)** | 0.128.0 - 0.145.0 |
 | 0.2.X(过时)     | 0.68.0 - 0.127.0  |
 
 {{< /admonition >}}
@@ -418,7 +418,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   [params.social]
     GitHub = "xxxx"
     Linkedin = ""
-    Twitter = "xxxx"
+    X = "xxxx" # {{< version 0.3.1 >}}
+    Twitter = "" # {{< version 0.3.1 deprecated >}}
     Instagram = "xxxx"
     Facebook = "xxxx"
     Telegram = "xxxx"
@@ -484,14 +485,14 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     ORCID = ""
     Pleroma = ""
     Kaggle = ""
-    MediaWiki= ""
+    MediaWiki = ""
     Plume = ""
     HackTheBox = ""
-    RootMe= ""
-    Malt = ""
-    TikTok = ""
-    TryHackMe = ""
-    Codeberg = ""
+    RootMe = ""
+    Malt = "" # {{< version 0.3.0 >}}
+    TikTok = "" # {{< version 0.3.0 >}}
+    TryHackMe = "" # {{< version 0.3.0 >}}
+    Codeberg = "" # {{< version 0.3.0 >}}
     Phone = ""
     Email = "xxxx@xxxx.com"
     RSS = true # {{< version 0.2.0 >}}
@@ -562,7 +563,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # {{< version 0.2.0 changed >}} 文章页面的分享信息设置
     [params.page.share]
       enable = true
-      Twitter = true
+      X = true # {{< version 0.3.1 >}}
+      Twitter = false # {{< version 0.3.1 deprecated >}}
+      Threads = true # {{< version 0.3.1 >}}
       Facebook = true
       Linkedin = false
       Whatsapp = false
@@ -584,7 +587,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       Evernote = false
       Skype = false
       Trello = false
+      Diaspora = true # {{< version 0.3.1 >}}
       Mix = false
+      Telegram = true # {{< version 0.3.1 >}}
     # {{< version 0.2.0 changed >}} 评论系统设置
     [params.page.comment]
       enable = false
@@ -809,9 +814,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   [privacy.googleAnalytics]
     # ...
   [privacy.twitter]
-    enableDNT = true
+    # ...
   [privacy.youtube]
-    privacyEnhanced = true
+    # ...
 
 # 用于输出 Markdown 格式文档的设置
 [mediaTypes]

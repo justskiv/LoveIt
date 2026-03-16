@@ -14,13 +14,16 @@ linkedin:
   Icon:
     Class: fab fa-linkedin fa-fw
 
-# 003: Twitter
-twitter:
+# 003: X
+x:
   Weight: 3
-  Prefix: https://twitter.com/
-  Title: Twitter
+  Prefix: https://x.com/
+  Title: X
   Icon:
-    Class: fab fa-twitter fa-fw
+    Class: fab fa-x-twitter fa-fw
+
+twitter:
+  Alias: x
 
 # 004: Instagram
 instagram:
@@ -575,7 +578,7 @@ rootme:
   Title: Root-Me
   Prefix: https://www.root-me.org/
   Icon:
-    Src: svg/icons/rootme.svg
+    Simpleicons: rootme
 
 # 073: Malt
 malt:
@@ -599,7 +602,7 @@ tryhackme:
   Title: TryHackMe
   Prefix: https://tryhackme.com/p/
   Icon:
-    Simpleicons: Tryhackme
+    Simpleicons: tryhackme
 
 # 076: Codeberg
 codeberg:

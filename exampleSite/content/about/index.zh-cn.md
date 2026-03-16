@@ -54,7 +54,7 @@ math:
 * :(far fa-user fa-fw): 支持 **[Gravatar](https://gravatar.com)** 头像
 * :(fas fa-user-circle fa-fw): 支持本地**头像**
 * :(far fa-id-card fa-fw): 支持多达 **76** 种社交链接
-* :(fas fa-share-square fa-fw): 支持多达 **24** 种网站分享
+* :(fas fa-share-square fa-fw): 支持多达 **27** 种网站分享
 * :(far fa-comment fa-fw): 支持 **[Disqus](https://disqus.com)** 评论系统
 * :(far fa-comment-dots fa-fw): 支持 **[Gitalk](https://github.com/gitalk/gitalk)** 评论系统
 * :(far fa-comment-alt fa-fw): 支持 **[Valine](https://valine.js.org/)** 评论系统
@@ -98,7 +98,7 @@ LoveIt 根据 **MIT** 许可协议授权。
 
 LoveIt 主题中用到了以下项目，感谢它们的作者：
 
-* [normalize.css](https://github.com/necolas/normalize.css)
+* [modern-normalize](https://github.com/sindresorhus/modern-normalize)
 * [Font Awesome](https://fontawesome.com/)
 * [Simple Icons](https://github.com/simple-icons/simple-icons)
 * [Animate.css](https://daneden.github.io/animate.css/)
