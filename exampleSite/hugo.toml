@@ -135,7 +135,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       name = "LoveIt"
       # you can add extra information before the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
-      pre = "<i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i>"
+      pre = "<i class='far fa-kiss-wink-heart' aria-hidden='true'></i>"
       # you can add extra information after the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
       post = ""
@@ -364,6 +364,11 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     TikTok = ""
     TryHackMe = ""
     Codeberg = ""
+    HuggingFace = ""
+    Threads = ""
+    LeetCode = ""
+    LeetCodeCN = ""
+    Bluesky = ""
     Email = ""
     RSS = ""
 
@@ -418,6 +423,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # the maximum number of lines of displayed code by default
       # 默认展开显示的代码行数
       maxShownLines = 50
+      [params.page.code.render]
+        goat = true
+        mermaid = true
     # KaTeX mathematical formulas config (KaTeX https://katex.org/)
     # KaTeX 数学公式配置 (KaTeX https://katex.org/)
     [params.page.math]
@@ -467,7 +475,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       X = true
       Threads = true
       Facebook = true
-      Linkedin = false
+      Linkedin = true
       Whatsapp = false
       Pinterest = false
       Tumblr = false
@@ -593,6 +601,15 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         lazyLoading = false
         lightTheme = "light"
         darkTheme = "dark"
+      # Waline comment config (https://waline.js.org/)
+      # Waline 评论系统设置 (https://waline.js.org/)
+      [params.page.comment.waline]
+        enable = false
+        serverURL = "https://love-it-waline.vercel.app"
+        # automatically adapt the current theme i18n configuration when empty
+        # 为空时自动适配当前主题 i18n 配置
+        lang = ""
+        emoji = ["https://unpkg.com/@waline/emojis@1.0.1/tw-emoji"]
     # Third-party library config
     # 第三方库配置
     [params.page.library]
@@ -656,13 +673,12 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   # Analytics config
   # 网站分析配置
   [params.analytics]
-    enable = false
     # Google Analytics
     [params.analytics.google]
       id = ""
-      # whether to anonymize IP
-      # 是否匿名化用户 IP
-      anonymizeIP = true
+      # whether to respect the browser’s “do not track” setting
+      # 是否遵循浏览器的 “Do Not Track” 设置
+      respectDoNotTrack = false
     # Fathom Analytics
     [params.analytics.fathom]
       id = ""
@@ -675,6 +691,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # Yandex Metrica
     [params.analytics.yandexMetrica]
       id = ""
+    [params.analytics.goatCounter]
+      code = ""
+
 
   # Cookie consent config
   # Cookie 许可配置
@@ -755,14 +774,14 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 # Permalinks config (https://gohugo.io/content-management/urls/#permalinks)
 # Permalinks 配置 (https://gohugo.io/content-management/urls/#permalinks)
 [permalinks]
-  # posts = ":year/:month/:filename"
-  posts = ":filename"
+  # posts = ":year/:month/:contentbasename"
+  posts = ":contentbasename"
 
-# Privacy config (https://gohugo.io/about/hugo-and-gdpr/)
-# 隐私信息配置 (https://gohugo.io/about/hugo-and-gdpr/)
+# Privacy config (https://gohugo.io/configuration/privacy/)
+# 隐私信息配置 (https://gohugo.io/configuration/privacy/)
 [privacy]
-  # privacy of the Google Analytics (replaced by params.analytics.google)
-  # Google Analytics 相关隐私 (被 params.analytics.google 替代)
+  # privacy of the Google Analytics (can also be configured in params.analytics.google)
+  # Google Analytics 相关隐私设置 (也能在 params.analytics.google 配置)
   [privacy.googleAnalytics]
     # ...
   [privacy.twitter]
@@ -844,7 +863,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [[languages.en.menu.main]]
         weight = 6
         identifier = "github"
-        pre = "<i class='fab fa-github fa-fw' aria-hidden='true'></i>"
+        pre = "<i class='fab fa-github' aria-hidden='true'></i>"
         post = ""
         name = ""
         url = "https://github.com/dillonzq/LoveIt"
@@ -877,10 +896,14 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [languages.en.params.social]
         GitHub = "xxxx"
         X = "xxxx"
+        Linkedin = "xxxx"
         Instagram = "xxxx"
         Facebook = "xxxx"
         Telegram = "xxxx"
         Youtubelegacy = "xxxx"
+        HuggingFace = "xxxx"
+        LeetCode = "xxxx"
+        Threads = "xxxx"
         Phone = "555-555-555"
         Email = "xxxx@xxxx.com"
         RSS = true
@@ -937,7 +960,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       [[languages.zh-cn.menu.main]]
         weight = 6
         identifier = "github"
-        pre = "<i class='fab fa-github fa-fw' aria-hidden='true'></i>"
+        pre = "<i class='fab fa-github' aria-hidden='true'></i>"
         post = ""
         name = ""
         url = "https://github.com/dillonzq/LoveIt"
@@ -975,6 +998,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         Douban = "xxxx"
         Devto = "xxxx"
         Bilibili = "xxxx"
+        LeetCodeCN = "xxxx"
         Email = "xxxx@xxxx.com"
         Phone = "555-555-555"
         RSS = true

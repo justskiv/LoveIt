@@ -1,0 +1,92 @@
+{{- $params := .Scratch.Get "params" -}}
+
+<div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>
+                    {{- with .Site.Params.dateformat | default "2006-01-02" | .Lastmod.Format -}}
+                        {{- dict "Date" . | T "updatedOnDate" -}}
+                        {{- if $.Site.Params.gitRepo -}}
+                            {{- with $.GitInfo -}}
+                                &nbsp;<a class="git-hash" href="{{ printf `%v/commit/%v` $.Site.Params.gitRepo .Hash }}" target="_blank" title="commit by {{ .AuthorName }}({{ .AuthorEmail }}) {{ .Hash }}: {{ .Subject }}">
+                                    <i class="fas fa-hashtag" aria-hidden="true"></i>{{- .AbbreviatedHash -}}
+                                </a>
+                            {{- end -}}
+                        {{- end -}}
+                    {{- end -}}
+                </span>
+            </div>
+            {{- if eq .Site.Params.analytics.enable true -}}
+            <div id="page-views" class="post-info-mod">
+            </div>
+            {{- end -}}
+            {{- with $params.license | string -}}
+            <div class="post-info-license">
+                <span>
+                    {{- . | safeHTML -}}
+                </span>
+            </div>
+            {{- end -}}
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md">
+                {{- if $params.linktomarkdown -}}
+                    {{- with .OutputFormats.Get "markdown" -}}
+                        <span>
+                            <a class="link-to-markdown" href="{{ .RelPermalink }}" target="_blank">
+                                {{- T "readMarkdown" -}}
+                            </a>
+                        </span>
+                    {{- end -}}
+                {{- end -}}
+            </div>
+            <div class="post-info-share">
+                <span>
+                    {{- partial "plugin/share.html" . -}}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags">
+            {{- with .Params.tags -}}
+                <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;
+                {{- range $index, $value := . -}}
+                    {{- if gt $index 0 }},&nbsp;{{ end -}}
+                    {{- $tag := partialCached "function/path.html" $value $value | printf "/tags/%v" | $.Site.GetPage -}}
+                    <a href="{{ $tag.RelPermalink }}">{{ $tag.Title }}</a>
+                {{- end -}}
+            {{- end -}}
+        </section>
+    </div>
+
+    <nav class="post-nav" aria-label="{{ T "postNavigation" | default "Post navigation" }}">
+        {{- $prevPage := false -}}
+        {{- $nextPage := false -}}
+        {{- if or (.Params.prev) (.Params.next) -}}
+            {{- with .Params.prev -}}
+                {{- $prevPage = $.Site.GetPage . -}}
+            {{- end -}}
+            {{- with .Params.next -}}
+                {{- $nextPage = $.Site.GetPage . -}}
+            {{- end -}}
+        {{- else -}}
+            {{- $prevPage = .PrevInSection -}}
+            {{- $nextPage = .NextInSection -}}
+        {{- end -}}
+        {{- with $prevPage -}}
+            <a href="{{ .RelPermalink }}" class="nav-card prev" rel="prev" aria-label="{{ T "prevPost" | default "Previous post" }}: {{ .Title | emojify | plainify }}">
+                <span class="nav-label"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i> {{ T "prevPost" }}</span>
+                <span class="nav-title">{{ .Title | emojify }}</span>
+            </a>
+        {{- end -}}
+        {{- with $nextPage -}}
+            <a href="{{ .RelPermalink }}" class="nav-card next" rel="next" aria-label="{{ T "nextPost" | default "Next post" }}: {{ .Title | emojify | plainify }}">
+                <span class="nav-label">{{ T "nextPost" }} <i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+                <span class="nav-title">{{ .Title | emojify }}</span>
+            </a>
+        {{- end -}}
+    </nav>
+</div>
