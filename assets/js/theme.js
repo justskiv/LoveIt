@@ -131,7 +131,7 @@ var Theme = /*#__PURE__*/function () {
           var _window$localStorage;
           var cfgTheme = document.body.getAttribute('cfg-theme');
           var theme = document.body.getAttribute('theme');
-          var themes = ['auto', 'light', 'dark'];
+          var themes = ['dark', 'light'];
           var newTheme = themes[(themes.indexOf(cfgTheme) + 1) % themes.length];
           _this2.isDark = newTheme === 'dark' || newTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches;
           document.body.setAttribute('theme', _this2.isDark ? 'dark' : 'light');
