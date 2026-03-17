@@ -842,6 +842,52 @@ class Theme {
         }, false);
     }
 
+    initScrollToggle() {
+        const btn = document.getElementById('scroll-toggle');
+        if (!btn) return;
+
+        const SHOW_THRESHOLD = 300;
+        let savedPosition = 0;
+        let isBack = false;
+        let programmaticScroll = false;
+
+        const updateVisibility = () => {
+            btn.classList.toggle('visible',
+                Util.getScrollTop() > SHOW_THRESHOLD || isBack);
+        };
+
+        btn.addEventListener('click', () => {
+            programmaticScroll = true;
+
+            if (isBack) {
+                window.scrollTo({ top: savedPosition, behavior: 'smooth' });
+                isBack = false;
+                btn.classList.remove('is-back');
+            } else {
+                savedPosition = Util.getScrollTop();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                isBack = true;
+                btn.classList.add('is-back');
+            }
+
+            window.addEventListener('scrollend', () => {
+                programmaticScroll = false;
+                updateVisibility();
+            }, { once: true });
+        });
+
+        this.scrollEventSet.add(() => {
+            if (programmaticScroll) return;
+            if (isBack) {
+                isBack = false;
+                btn.classList.remove('is-back');
+            }
+            updateVisibility();
+        });
+
+        updateVisibility();
+    }
+
     onClickMask() {
         document.getElementById('mask').addEventListener('click', () => {
             for (let event of this.clickMaskEventSet) event();
@@ -867,6 +913,7 @@ class Theme {
             this.initTypeit();
             this.initMapbox();
             this.initCookieconsent();
+            this.initScrollToggle();
         } catch (err) {
             console.error(err);
         }
