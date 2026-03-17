@@ -167,6 +167,9 @@ other = "要約"
 [info]
 other = "情報"
 
+[todo]
+other = "やること"
+
 [tip]
 other = "ヒント"
 

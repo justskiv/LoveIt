@@ -65,7 +65,9 @@ This is a **right-aligned** paragraph.
 `link` shortcode 是 [Markdown 链接语法](../basic-markdown-syntax#links) 的替代.
 `link` shortcode 可以提供一些其它的功能并且可以在代码块中使用.
 
+{{< admonition tip >}}
 {{< version 0.2.10 >}} 支持[本地资源引用](../theme-documentation-content#contents-organization)的完整用法.
+{{< /admonition >}}
 
 `link` shortcode 有以下命名参数:
 
@@ -131,7 +133,9 @@ This is a **right-aligned** paragraph.
 
 `image` shortcode 是 [`figure` shortcode](../theme-documentation-built-in-shortcodes#figure) 的替代. `image` shortcode 可以充分利用 [lazysizes](https://github.com/aFarkas/lazysizes) 和 [lightGallery](https://github.com/sachinchoolur/lightgallery) 两个依赖库.
 
+{{< admonition tip >}}
 {{< version 0.2.10 >}} 支持[本地资源引用](../theme-documentation-content#contents-organization)的完整用法.
+{{< /admonition >}}
 
 `image` shortcode 有以下命名参数:
 
@@ -195,15 +199,19 @@ This is a **right-aligned** paragraph.
 
 ## 4 admonition
 
-`admonition` shortcode 支持 **12** 种 帮助你在页面中插入提示的横幅.
+{{< version 1.0.0 changed >}}
+
+`admonition` shortcode 支持 **13** 种 帮助你在页面中插入提示的横幅.
 
 *支持 Markdown 或者 HTML 格式.*
 
-{{< admonition >}}
+{{< admonition note >}}
 一个 **注意** 横幅
 {{< /admonition >}}
 
 {{< admonition abstract >}}
+**别名**: `summary`, `tldr`
+
 一个 **摘要** 横幅
 {{< /admonition >}}
 
@@ -211,27 +219,45 @@ This is a **right-aligned** paragraph.
 一个 **信息** 横幅
 {{< /admonition >}}
 
+{{< admonition todo >}}
+{{< version 1.0.0 >}}
+
+一个 **待办** 横幅
+{{< /admonition >}}
+
 {{< admonition tip >}}
-一个 **技巧** 横幅
+**别名**: `hint`, `important`
+
+一个 **提示** 横幅
 {{< /admonition >}}
 
 {{< admonition success >}}
+**别名**: `check`, `done`
+
 一个 **成功** 横幅
 {{< /admonition >}}
 
 {{< admonition question >}}
+**别名**: `help`, `faq`
+
 一个 **问题** 横幅
 {{< /admonition >}}
 
 {{< admonition warning >}}
+**别名**: `warn`, `caution`, `attention`
+
 一个 **警告** 横幅
 {{< /admonition >}}
 
 {{< admonition failure >}}
+**别名**: `fail`, `missing`
+
 一个 **失败** 横幅
 {{< /admonition >}}
 
 {{< admonition danger >}}
+**别名**: `error`
+
 一个 **危险** 横幅
 {{< /admonition >}}
 
@@ -244,6 +270,8 @@ This is a **right-aligned** paragraph.
 {{< /admonition >}}
 
 {{< admonition quote >}}
+**别名**: `cite`
+
 一个 **引用** 横幅
 {{< /admonition >}}
 
@@ -264,19 +292,19 @@ This is a **right-aligned** paragraph.
 一个 `admonition` 示例:
 
 ```markdown
-{{</* admonition type=tip title="This is a tip" open=false */>}}
-一个 **技巧** 横幅
+{{</* admonition type=tip title="这是一个提示" open=false */>}}
+这是一个提示
 {{</* /admonition */>}}
 或者
-{{</* admonition tip "This is a tip" false */>}}
-一个 **技巧** 横幅
+{{</* admonition tip "这是一个提示" false */>}}
+这是一个提示
 {{</* /admonition */>}}
 ```
 
 呈现的输出效果如下:
 
-{{< admonition tip "This is a tip" false >}}
-一个 **技巧** 横幅
+{{< admonition tip "这是一个提示" false >}}
+这是一个提示
 {{< /admonition >}}
 
 ## 5 mermaid

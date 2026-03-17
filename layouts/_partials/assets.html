@@ -30,6 +30,21 @@
         {{- $source := $cdn.algoliasearchJS | default "lib/algoliasearch/lite/browser.umd.js" -}}
         {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
         {{- $config = dict "type" "algolia" "algoliaIndex" $search.algolia.index "algoliaAppID" $search.algolia.appID "algoliaSearchKey" $search.algolia.searchKey | dict "search" | merge $config -}}
+    {{- else if eq $search.type "fuse" -}}
+        {{- with .Site.Home.OutputFormats.Get "json" -}}
+            {{- $config = dict "type" "fuse" "fuseIndexURL" .RelPermalink | dict "search" | merge $config -}}
+        {{- end -}}
+        {{- $source := $cdn.fuseJS | default "lib/fuse/fuse.min.js" -}}
+        {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
+        {{- with $search.fuse -}}
+            {{- $config = dict "fuseOpts" (dict "isCaseSensitive" .isCaseSensitive "minMatchCharLength" .minMatchCharLength "findAllMatches" .findAllMatches "location" .location "threshold" .threshold "distance" .distance "ignoreLocation" .ignoreLocation) | dict "search" | merge $config -}}
+        {{- end -}}
+    {{- else if eq $search.type "pagefind" -}}
+        {{- $basePath := "/_pagefind/" -}}
+        {{- with $search.pagefind -}}
+            {{- $basePath = .basePath | default "/_pagefind/" -}}
+        {{- end -}}
+        {{- $config = dict "type" "pagefind" "pagefindBasePath" $basePath | dict "search" | merge $config -}}
     {{- end -}}
 {{- end -}}
 
@@ -202,7 +217,7 @@
 {{- $config | jsonify | printf "window.config=%s;" | dict "Content" | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
 
 {{- /* Theme script */ -}}
-{{- dict "Source" "js/theme.js" "Minify" true "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
+{{- dict "Source" "js/theme.js" "JSBuild" true "Minify" true "TargetPath" "js/theme.js" "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
 
 {{- with (.Scratch.Get "this").scriptArr -}}
     {{- delimit . "\n" | dict "Content" | dict "Scratch" $.Scratch "Data" | partial "scratch/script.html" -}}
