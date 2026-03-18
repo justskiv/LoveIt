@@ -1,7 +1,7 @@
 .page {
   position: relative;
-  max-width: 720px;
-  width: 60%;
+  max-width: 802px;
+  width: calc(100% - 120px);
   margin: 0 auto;
 
   [data-header-desktop] & {
