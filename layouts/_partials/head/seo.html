@@ -86,6 +86,10 @@
         {{- with .Site.Params.seo.image -}}
             {{- $images = $images | default (slice .) -}}
         {{- end -}}
+        {{- /* last resort: cover path from front matter (e.g. /img/...) */ -}}
+        {{- with $params.featuredimagepreview | default $params.featuredimage -}}
+            {{- $images = $images | default (slice .) -}}
+        {{- end -}}
         {{- with $images -}}
             "image": [
                 {{- range $index, $value := . -}}
@@ -123,7 +127,12 @@
             "license": {{ . | safeHTML }},
         {{- end -}}
         {{- $publisher := .Params.author | default .Site.Params.author.name | default (T "author") | dict "name" -}}
-        {{- $publisher = $params.seo.publisher | default dict | merge $publisher -}}
+        {{- /* drop empty config values so a blank name="" does not wipe author */ -}}
+        {{- $pubConfig := dict -}}
+        {{- range $k, $v := $params.seo.publisher -}}
+            {{- with $v -}}{{- $pubConfig = dict $k $v | merge $pubConfig -}}{{- end -}}
+        {{- end -}}
+        {{- $publisher = $pubConfig | merge $publisher -}}
         "publisher": {
             "@type": "Organization",
             "name": {{ $publisher.name | safeHTML }}
@@ -147,7 +156,35 @@
                 "name": {{ . | safeHTML }}
             },
         {{- end -}}
-        "description": {{ .Description | safeHTML }}
+        "description": {{ .Scratch.Get "description" | safeHTML }}
+    }
+    </script>
+{{- end -}}
+
+{{- /* BreadcrumbList: root → … → current page (pages with ancestors) */ -}}
+{{- $crumbs := .Ancestors.Reverse -}}
+{{- if and $crumbs (ne .Kind "404") -}}
+    <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {{- range $i, $a := $crumbs -}}
+                {{- if gt $i 0 }},{{ end }}
+                {
+                    "@type": "ListItem",
+                    "position": {{ add $i 1 }},
+                    "name": {{ $a.Title | safeHTML }},
+                    "item": "{{ $a.Permalink }}"
+                }
+            {{- end -}}
+            ,{
+                "@type": "ListItem",
+                "position": {{ add (len $crumbs) 1 }},
+                "name": {{ $.Title | safeHTML }},
+                "item": "{{ $.Permalink }}"
+            }
+        ]
     }
     </script>
 {{- end -}}

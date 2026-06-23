@@ -27,6 +27,11 @@
 {{- end -}}
 
 {{- .Scratch.Set "params" $params -}}
+
+{{- /* single description source for <meta>, OG and JSON-LD: */ -}}
+{{- /* front matter → post summary → site description */ -}}
+{{- .Scratch.Set "description" ($params.description | default (.Summary | plainify | htmlUnescape | chomp) | default .Site.Params.description) -}}
+
 {{- .Scratch.Set "this" dict -}}
 
 {{- partial "plugin/compatibility.html" . -}}
