@@ -7,3 +7,11 @@ img {
     @include object-fit(contain);
   }
 }
+
+// Reserve space for lazy-loaded body images that carry no intrinsic
+// width/height (static paths), so they don't shift content while loading.
+// Scoped to article content so it never touches the header logo or other
+// service images; covers are handled by their own containers.
+.content img.lazyload:not([width]) {
+  min-height: 12rem;
+}

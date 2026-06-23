@@ -2,6 +2,9 @@
 {{- $src := .Src -}}
 {{- $width := .Width -}}
 {{- $height := .Height -}}
+{{- /* Eager above-the-fold images (featured, avatar) skip lazysizes so the */ -}}
+{{- /* LCP element does not wait for JS; the caller knows which image it is. */ -}}
+{{- $eager := .Eager -}}
 {{- with dict "Path" $src "Resources" .Resources | partial "function/resource.html" -}}
     {{- $src = .RelPermalink -}}
     {{ if not (eq .MediaType.SubType "svg") }}
@@ -20,10 +23,10 @@
     {{- $large = .RelPermalink -}}
 {{- end -}}
 
-{{- $alt := .Alt | default $src -}}
+{{- $alt := .Alt | default .Title | default "" -}}
 {{- $captionPlain := "" -}}
 {{- with .Caption }}{{ $captionPlain = . | plainify }}{{ end -}}
-{{- $title := .Title | default .Alt | default $captionPlain -}}
+{{- $title := .Title | default $captionPlain -}}
 {{- $loading := resources.Get "svg/loading.svg" | minify -}}
 {{- if .Linked -}}
     <a class="lightgallery" href="{{ $large | safeURL }}"{{ with $title }} title="{{ . }}"{{ end }} data-thumbnail="{{ $small | safeURL }}"{{ with .Caption }} data-sub-html="<h2>{{ . }}</h2>{{ with $.Title }}<p>{{ . }}</p>{{ end }}"{{ end }}{{ with .Rel }} rel="{{ . }}"{{ end }}>
@@ -37,6 +40,18 @@
             {{- with $width }} width="{{ . }}"{{ end }}
             {{- with $height }} height="{{ . }}"{{ end }} />
     </a>
+{{- else if $eager -}}
+    {{- /* Above-the-fold: load the real src now, hint high priority, */ -}}
+    {{- /* and stay off lazysizes (no class="lazyload"). */ -}}
+    <img
+        {{- with .Class }} class="{{ . }}"{{ end }}
+        src="{{ $src | safeURL }}"
+        alt="{{ $alt }}"
+        loading="eager"
+        fetchpriority="high"
+        {{- with $title }} title="{{ . }}"{{ end }}
+        {{- with $width }} width="{{ . }}"{{ end }}
+        {{- with $height }} height="{{ . }}"{{ end }} />
 {{- else -}}
     <img
         class="lazyload{{ with .Class }} {{ . }}{{ end }}"

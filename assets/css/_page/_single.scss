@@ -43,6 +43,11 @@
       height: auto;
       margin: 0 auto;
       overflow: hidden;
+      // Cheap CLS floor for the eager cover: static-path covers carry no
+      // intrinsic width/height, so reserve some height before load. It stays
+      // below a wide cover's real rendered height, so it never adds a reverse
+      // shift. Full reservation waits for resource-resolved sizes (see task).
+      min-height: 12rem;
     }
 
     img.lazyloaded {
