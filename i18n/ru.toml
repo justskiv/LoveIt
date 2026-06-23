@@ -43,6 +43,9 @@ other = "Выбор Языка"
 
 [switchTheme]
 other = "Сменить Тему"
+
+[menu]
+other = "Меню"
 # === partials/header.html ===
 
 # === partials/footer.html ===

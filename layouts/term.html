@@ -5,7 +5,7 @@
 {{- define "content" -}}
     <div class="page archive">
         {{- /* Title */ -}}
-        <h2 class="single-title animate__animated animate__pulse animate__faster">
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
             {{- $taxonomy := .Data.Singular -}}
             {{- if eq $taxonomy "category" -}}
                 <i class="far fa-folder-open fa-fw" aria-hidden="true"></i>&nbsp;{{ .Title }}
@@ -14,7 +14,7 @@
             {{- else -}}
                 {{- printf "%v - %v" (T $taxonomy | default $taxonomy) .Title -}}
             {{- end -}}
-        </h2>
+        </h1>
 
         {{- /* Paginate */ -}}
         {{- if .Pages -}}
@@ -25,7 +25,7 @@
                 {{- $pages = .Paginate $pages -}}
             {{- end -}}
             {{- range $pages.PageGroups -}}
-                <h3 class="group-title">{{ .Key }}</h3>
+                <h2 class="group-title">{{ .Key }}</h2>
                 {{- range .Pages -}}
                     <article class="archive-item">
                         <a href="{{ .RelPermalink }}" class="archive-item-link">

@@ -245,6 +245,11 @@ header {
       .menu-toggle {
         line-height: 4rem;
         cursor: pointer;
+        // strip native <button> chrome (the trigger is a real button for a11y)
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
         @include transition(width 0.3s ease);
 
         span {

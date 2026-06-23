@@ -43,10 +43,10 @@
                 {{- if .Site.Params.search.enable -}}
                     <span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="{{ .Site.Params.search.placeholder | default (T `searchPlaceholder`) }}" id="search-input-desktop">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="{{ T `search` }}">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="{{ T `search` }}" aria-label="{{ T "search" | default "Search" | emojify | plainify }}">
                             <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="{{ T `clear` }}">
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="{{ T `clear` }}" aria-label="{{ T "clear" | default "Clear" | emojify | plainify }}">
                             <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-desktop">
@@ -54,13 +54,13 @@
                         </span>
                     </span>
                 {{- end -}}
-                <a href="javascript:void(0);" class="menu-item theme-switch" title="{{ T "switchTheme" }}">
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="{{ T "switchTheme" }}" aria-label="{{ T "switchTheme" | default "Switch theme" | emojify | plainify }}">
                     <i class="fas fa-adjust" aria-hidden="true"></i>
                 </a>
                 {{- if hugo.IsMultilingual -}}
                 <a href="javascript:void(0);" class="menu-item language" title="{{ T "selectLanguage" }}">
                     <i class="fa fa-globe" aria-hidden="true"></i>
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;">
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;" aria-label="{{ T "selectLanguage" | default "Select language" | emojify | plainify }}">
                         {{- if eq .Kind "404" -}}
                             {{- /* https://github.com/dillonzq/LoveIt/issues/378 */ -}}
                             {{- range .Sites -}}
@@ -112,19 +112,19 @@
                     {{- end -}}
                 </a>
             </div>
-            <div class="menu-toggle" id="menu-toggle-mobile">
+            <button type="button" class="menu-toggle" id="menu-toggle-mobile" aria-controls="menu-mobile" aria-label="{{ T "menu" | default "Menu" | emojify | plainify }}">
                 <span></span><span></span><span></span>
-            </div>
+            </button>
         </div>
         <div class="menu" id="menu-mobile">
             {{- if .Site.Params.search.enable -}}
                 <div class="search-wrapper">
                     <div class="search mobile" id="search-mobile">
                         <input type="text" placeholder="{{ .Site.Params.search.placeholder | default (T `searchPlaceholder`) }}" id="search-input-mobile">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="{{ T `search` }}">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="{{ T `search` }}" aria-label="{{ T "search" | default "Search" | emojify | plainify }}">
                             <i class="fas fa-search" aria-hidden="true"></i>
                         </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="{{ T `clear` }}">
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="{{ T `clear` }}" aria-label="{{ T "clear" | default "Clear" | emojify | plainify }}">
                             <i class="fas fa-times-circle" aria-hidden="true"></i>
                         </a>
                         <span class="search-button search-loading" id="search-loading-mobile">
@@ -146,13 +146,13 @@
                     {{- .Pre | safeHTML }}{{ .Name }}{{ .Post | safeHTML -}}
                 </a>
             {{- end -}}
-            <a href="javascript:void(0);" class="menu-item theme-switch" title="{{ T "switchTheme" }}">
+            <a href="javascript:void(0);" class="menu-item theme-switch" title="{{ T "switchTheme" }}" aria-label="{{ T "switchTheme" | default "Switch theme" | emojify | plainify }}">
                 <i class="fas fa-adjust" aria-hidden="true"></i>
             </a>
             {{- if hugo.IsMultilingual -}}
                 <a href="javascript:void(0);" class="menu-item" title="{{ T "selectLanguage" }}">
                     <i class="fa fa-globe" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;">
+                    <select class="language-select" onchange="location = this.value;" aria-label="{{ T "selectLanguage" | default "Select language" | emojify | plainify }}">
                         {{- if eq .Kind "404" -}}
                             {{- /* https://github.com/dillonzq/LoveIt/issues/378 */ -}}
                             {{- range .Sites -}}
