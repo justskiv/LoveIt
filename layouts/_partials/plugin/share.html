@@ -124,31 +124,10 @@
         </a>
     {{- end -}}
 
-    {{- /* 018: Weibo */ -}}
-    {{- if $share.Weibo -}}
-        <a href="javascript:void(0);" title="{{ T `shareOn` }} 微博" data-sharer="weibo" data-url="{{ .Permalink }}" data-title="{{ .Title }}"{{ with .Params.featuredImage }} data-image="{{ . }}"{{ end }}{{ with .Site.Params.Social.Weibo }} data-ralateuid="{{ . }}"{{ end }}>
-            {{- dict "Class" "fab fa-weibo" | partial "plugin/icon.html" -}}
-        </a>
-    {{- end -}}
-
     {{- /* 019: Blogger */ -}}
     {{- if $share.Blogger -}}
         <a href="javascript:void(0);" title="{{ T `shareOn` }} Blogger" data-sharer="blogger" data-url="{{ .Permalink }}" data-title="{{ .Title }}" data-description="{{ .Description }}">
             {{- dict "Class" "fab fa-blogger" | partial "plugin/icon.html" -}}
-        </a>
-    {{- end -}}
-
-    {{- /* 020: Baidu */ -}}
-    {{- if $share.Baidu -}}
-        <a href="javascript:void(0);" title="{{ T `shareOn` }} 百度" data-sharer="baidu" data-url="{{ .Permalink }}" data-title="{{ .Title }}">
-            {{- dict "Simpleicons" "baidu" "Prefix" (.Scratch.Get "cdn" | default dict).simpleIconsPrefix | partial "plugin/icon.html" -}}
-        </a>
-    {{- end -}}
-
-    {{- /* 021: OK.RU */ -}}
-    {{- if $share.Odnoklassniki -}}
-        <a href="javascript:void(0);" title="{{ T `shareOn` }} OK.RU" data-sharer="okru" data-url="{{ .Permalink }}" data-title="{{ .Title }}">
-            {{- dict "Class" "fab fa-odnoklassniki" | partial "plugin/icon.html" -}}
         </a>
     {{- end -}}
 

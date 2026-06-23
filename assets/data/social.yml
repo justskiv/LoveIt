@@ -169,22 +169,6 @@ stackoverflow:
   Icon:
     Class: fab fa-stack-overflow
 
-# 021: 微博
-weibo:
-  Weight: 21
-  Prefix: https://weibo.com/
-  Title: 微博
-  Icon:
-    Class: fab fa-weibo
-
-# 022: OK.RU
-odnoklassniki:
-  Weight: 22
-  Prefix: https://ok.ru/
-  Title: OK.RU
-  Icon:
-    Class: fab fa-odnoklassniki
-
 # 023: VK
 vk:
   Weight: 23
@@ -352,22 +336,6 @@ whatsapp:
   Title: WhatsApp
   Icon:
     Class: fab fa-whatsapp
-
-# 044: 知乎
-zhihu:
-  Weight: 44
-  Prefix: https://www.zhihu.com/people/
-  Title: 知乎
-  Icon:
-    Simpleicons: zhihu
-
-# 045: 豆瓣
-douban:
-  Weight: 45
-  Prefix: https://www.douban.com/people/
-  Title: 豆瓣
-  Icon:
-    Simpleicons: douban
 
 # 046: Angellist
 angellist:
@@ -635,14 +603,6 @@ bluesky:
   Prefix: https://bsky.app/profile/
   Icon:
     Simpleicons: bluesky
-
-# 080: LeetCode CN
-leetcodecn:
-  Weight: 80
-  Title: LeetCode
-  Prefix: https://leetcode.cn/u/
-  Icon:
-    Simpleicons: leetcode
 
 # 081: LeetCode
 leetcode:
