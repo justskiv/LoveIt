@@ -53,7 +53,7 @@
                     <i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="{{ . }}">{{ . }}</time>&nbsp;
                 {{- end -}}
                 <i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;{{ T "wordCount" .WordCount }}&nbsp;
-                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;{{ T "readingTime" .ReadingTime }}&nbsp;
+                <i class="far fa-clock" aria-hidden="true"></i>&nbsp;~{{ T "readingTimeMinutes" (partial "reading-time.html" .) }}&nbsp;
                 {{- $comment := .Scratch.Get "comment" | default dict -}}
                 {{- if $comment.enable | and $comment.valine.enable | and $comment.valine.visitor -}}
                     <span id="{{ .RelPermalink }}" class="leancloud_visitors" data-flag-title="{{ .Title }}">

@@ -1,0 +1,50 @@
+{{- /*
+    reading-time.html — оценка времени чтения, откалиброванная под русский
+    язык и технические тексты. Возвращает целое число минут (>= 1).
+
+    Hugo-штатный `.ReadingTime` считает по фиксированным ~213 словам/мин, что
+    почти вдвое завышает скорость для плотной русской техн. прозы (норма
+    IReST для русского ~180 слов/мин, а технический текст медленнее).
+
+    Модель:
+      * базовая скорость прозы зависит от сложности поста (frontmatter
+        `complexity`: easy|medium|hard, по умолчанию medium);
+      * код (блоки <pre>) выносится из прозы и считается отдельно, медленнее —
+        его «парсят», а не «читают»;
+      * каждое изображение добавляет фиксированное время на просмотр.
+
+    Все ставки переопределяются через site params `readingTime`:
+      [params.readingTime]
+        codeWPM      = 85
+        imageSeconds = 10
+        [params.readingTime.proseWPM]
+          easy = 200
+          medium = 150
+          hard = 110
+*/ -}}
+{{- $cfg := .Site.Params.readingTime | default dict -}}
+{{- $proseWPM := dict "easy" 200.0 "medium" 150.0 "hard" 110.0 -}}
+{{- with $cfg.proseWPM }}{{ $proseWPM = . }}{{ end -}}
+{{- $codeWPM := $cfg.codeWPM | default 85.0 -}}
+{{- $imgSeconds := $cfg.imageSeconds | default 10.0 -}}
+
+{{- $level := lower (.Params.complexity | default "medium") -}}
+{{- if not (index $proseWPM $level) }}{{ $level = "medium" }}{{ end -}}
+{{- $wpm := index $proseWPM $level -}}
+
+{{- /* Слова внутри блоков кода считаем по отдельной (более медленной) ставке. */ -}}
+{{- $codeWords := 0 -}}
+{{- range findRE `(?s)<pre.*?</pre>` .Content 1000 -}}
+    {{- $codeWords = add $codeWords (countwords (plainify .)) -}}
+{{- end -}}
+
+{{- $proseWords := math.Max 0 (sub .WordCount $codeWords) -}}
+{{- $images := len (findRE `<img` .Content 1000) -}}
+
+{{- $sec := add (add
+        (mul (div $proseWords $wpm) 60.0)
+        (mul (div (float $codeWords) $codeWPM) 60.0))
+        (mul (float $images) $imgSeconds) -}}
+{{- $minutes := math.Ceil (div $sec 60.0) -}}
+{{- if lt $minutes 1.0 }}{{ $minutes = 1.0 }}{{ end -}}
+{{- return (int $minutes) -}}

@@ -124,6 +124,9 @@ other = "{{ .Count }} words"
 one = "One minute"
 other = "{{ .Count }} minutes"
 
+[readingTimeMinutes]
+other = "{{ .Count }} min"
+
 [views]
 other = "views"
 
