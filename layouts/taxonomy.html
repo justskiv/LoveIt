@@ -17,7 +17,9 @@
         <div class="categories-card">
             {{- range $terms -}}
                 {{- $term := .Term -}}
-                {{- $pages := .Pages -}}
+                {{- /* Exclude unlisted (build.list: never) pages from previews, */ -}}
+                {{- /* so the overview honours the direct-link-only contract. */ -}}
+                {{- $pages := where .Pages "Params.build.list" "!=" "never" -}}
                 {{- with $.Site.GetPage "taxonomy" (printf "%v/%v" $type $term) -}}
                 <div class="card-item">
                     <div class="card-item-wrapper">

@@ -1,4 +1,3 @@
-{{- $inner := .Inner | .Page.RenderString -}}
 {{- $options := .Inner | .Page.RenderString | dict "Inner" -}}
 
 {{- if .IsNamedParams -}}

@@ -5,7 +5,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        {{- if eq (.Params._build.list | default "always") "never" -}}
+        {{- if eq (.Params.build.list | default "always") "never" -}}
         <meta name="robots" content="noindex" />
         {{- end -}}
         <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
