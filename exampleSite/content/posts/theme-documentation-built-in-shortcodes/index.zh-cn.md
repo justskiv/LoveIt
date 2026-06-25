@@ -81,11 +81,9 @@ Hugo 附带了一组预定义的 shortcodes, 它们实现了一些非常常见�
 {{</* gist spf13 7896402 */>}}
 ```
 
-呈现的输出效果如下:
-
-{{< gist spf13 7896402 >}}
-
-输出的 HTML 看起来像这样:
+出于安全考虑, 本分支已禁用 `gist` 的实时渲染: 该 shortcode 会注入来自
+gist.github.com 的第三方脚本, 且无法附加 SRI 完整性校验. 其输出的 HTML
+看起来像这样:
 
 ```html
 <script type="application/javascript" src="https://gist.github.com/spf13/7896402.js"></script>

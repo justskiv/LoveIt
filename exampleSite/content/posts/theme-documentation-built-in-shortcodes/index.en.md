@@ -80,11 +80,9 @@ Example `gist` input:
 {{</* gist spf13 7896402 */>}}
 ```
 
-The rendered output looks like this:
-
-{{< gist spf13 7896402 >}}
-
-The HTML looks like this:
+The live render is intentionally disabled in this fork: the `gist` shortcode
+injects a third-party script from gist.github.com that cannot carry an
+integrity (SRI) hash. The emitted HTML would look like this:
 
 ```html
 <script type="application/javascript" src="https://gist.github.com/spf13/7896402.js"></script>
