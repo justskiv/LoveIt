@@ -161,6 +161,9 @@
 
         <div id="remark42"></div>
 
+        {{- /* expose remark42 to theme.js so it follows dark/light switches */ -}}
+        {{- $commentConfig = dict "host" $remark42.host "siteId" $remark42.siteId | dict "remark42" | merge $commentConfig -}}
+
         {{- $source := printf "%v/web/embed.js" $remark42.host -}}
         {{- dict "Source" $source "Defer" true | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
 

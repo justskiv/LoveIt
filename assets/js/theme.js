@@ -43,6 +43,9 @@ class Theme {
     }
 
     initRaw() {
+        // innerHTML is intentional here: the source is the `raw` shortcode,
+        // i.e. trusted author HTML by design. Never route search/index or
+        // front-matter data through this path — escape that instead.
         Util.forEach(document.querySelectorAll('[data-raw]'), $raw => {
             $raw.innerHTML = this.data[$raw.id];
         });
@@ -89,12 +92,11 @@ class Theme {
         Util.forEach(document.getElementsByClassName('theme-switch'), $themeSwitch => {
             $themeSwitch.addEventListener('click', () => {
                 const cfgTheme = document.body.getAttribute('cfg-theme');
-                const theme = document.body.getAttribute('theme');
 
                 const themes = ['dark', 'light'];
                 const newTheme = themes[(themes.indexOf(cfgTheme) + 1) % themes.length];
 
-                this.isDark = newTheme === 'dark' || (newTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                this.isDark = newTheme === 'dark';
                 document.body.setAttribute('theme', this.isDark ? 'dark' : 'light');
                 document.body.setAttribute('cfg-theme', newTheme);
                 window.localStorage?.setItem('theme', newTheme);
@@ -110,7 +112,20 @@ class Theme {
 
         const maxResultLength = searchConfig.maxResultLength ? searchConfig.maxResultLength : 10;
         const snippetLength = searchConfig.snippetLength ? searchConfig.snippetLength : 50;
-        const highlightTag = searchConfig.highlightTag ? searchConfig.highlightTag : 'em';
+        // Restrict the highlight tag to a bare tag name so it can never carry
+        // attributes or extra markup into the DOM, whatever the config holds.
+        const rawHighlightTag = searchConfig.highlightTag ? searchConfig.highlightTag : 'em';
+        const highlightTag = /^[a-zA-Z0-9]+$/.test(rawHighlightTag) ? rawHighlightTag : 'em';
+        // Neutral sentinels for the Algolia path (no markup in the request).
+        const ALGOLIA_HL_PRE = '__LOVEIT_HL__';
+        const ALGOLIA_HL_POST = '__/LOVEIT_HL__';
+
+        // Escape index fields and the visitor query before they reach the DOM:
+        // escape first, then wrap matches in highlightTag, so the only markup
+        // emitted is the highlight tag itself (no raw HTML from data or input).
+        const escapeHTML = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+        }[c]));
 
         const suffix = isMobile ? 'mobile' : 'desktop';
         const $header = document.getElementById(`header-${suffix}`);
@@ -208,6 +223,8 @@ class Theme {
                                 } else {
                                     context = context.slice(0, snippetLength);
                                 }
+                                title = escapeHTML(title);
+                                context = escapeHTML(context);
                                 Object.keys(metadata).forEach(key => {
                                     title = title.replace(new RegExp(`(${key})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
                                     context = context.replace(new RegExp(`(${key})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
@@ -259,20 +276,28 @@ class Theme {
                                         length: maxResultLength * 8,
                                         attributesToHighlight: ['title'],
                                         attributesToSnippet: [`content:${snippetLength}`],
-                                        highlightPreTag: `<${highlightTag}>`,
-                                        highlightPostTag: `</${highlightTag}>`,
+                                        // Ask Algolia for neutral sentinels instead of real tags, so
+                                        // no markup is embedded in the request. Algolia HTML-escapes
+                                        // the attribute value and only wraps matches in these tokens;
+                                        // we then swap the sentinels for the sanitized highlight tag.
+                                        // (Re-escaping here would double-escape Algolia's output.)
+                                        highlightPreTag: ALGOLIA_HL_PRE,
+                                        highlightPostTag: ALGOLIA_HL_POST,
                                     }
                                 ]
                             })
                             .then(({ results: [{ hits }] }) => {
                                 const results = {};
+                                const renderHighlight = (v) => String(v)
+                                    .split(ALGOLIA_HL_PRE).join(`<${highlightTag}>`)
+                                    .split(ALGOLIA_HL_POST).join(`</${highlightTag}>`);
                                 hits.forEach(({ uri, date, _highlightResult: { title }, _snippetResult: { content } }) => {
                                     if (results[uri] && results[uri].context.length > content.value) return;
                                     results[uri] = {
                                         uri: uri,
-                                        title: title.value,
+                                        title: renderHighlight(title.value),
                                         date: date,
-                                        context: content.value,
+                                        context: renderHighlight(content.value),
                                     };
                                 });
                                 finish(Object.values(results).slice(0, maxResultLength));
@@ -303,6 +328,8 @@ class Theme {
                                 } else {
                                     context = context.slice(0, snippetLength);
                                 }
+                                title = escapeHTML(title);
+                                context = escapeHTML(context);
                                 const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                                 title = title.replace(new RegExp(`(${escapedQuery})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
                                 context = context.replace(new RegExp(`(${escapedQuery})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
@@ -356,6 +383,8 @@ class Theme {
                                     let title = item.meta?.title || '';
                                     let context = item.excerpt || item.content || '';
                                     context = context.slice(0, snippetLength);
+                                    title = escapeHTML(title);
+                                    context = escapeHTML(context);
                                     const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                                     title = title.replace(new RegExp(`(${escapedQuery})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
                                     context = context.replace(new RegExp(`(${escapedQuery})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
@@ -371,8 +400,8 @@ class Theme {
                     }
                 },
                 templates: {
-                    suggestion: ({ title, date, context }) => `<div><span class="suggestion-title">${title}</span><span class="suggestion-date">${date}</span></div><div class="suggestion-context">${context}</div>`,
-                    empty: ({ query }) => `<div class="search-empty">${searchConfig.noResultsFound}: <span class="search-query">"${query}"</span></div>`,
+                    suggestion: ({ title, date, context }) => `<div><span class="suggestion-title">${title}</span><span class="suggestion-date">${escapeHTML(date)}</span></div><div class="suggestion-context">${context}</div>`,
+                    empty: ({ query }) => `<div class="search-empty">${searchConfig.noResultsFound}: <span class="search-query">"${escapeHTML(query)}"</span></div>`,
                     footer: ({}) => {
                         const searchTypes = {
                             algolia: { searchType: 'algolia', icon: '<i class="fab fa-algolia" aria-hidden="true"></i>', href: 'https://www.algolia.com/' },
@@ -381,7 +410,7 @@ class Theme {
                             pagefind: { searchType: 'Pagefind', icon: '', href: 'https://pagefind.app/' },
                         };
                         const { searchType, icon, href } = searchTypes[searchConfig.type] || searchTypes.lunr;
-                        return `<div class="search-footer">Search by <a href="${href}" rel="noopener noreffer" target="_blank">${icon} ${searchType}</a></div>`;},
+                        return `<div class="search-footer">Search by <a href="${href}" rel="noopener noreferrer" target="_blank">${icon} ${searchType}</a></div>`;},
                 },
             });
             autosearch.on('autocomplete:selected', (_event, suggestion, _dataset, _context) => {
@@ -580,6 +609,8 @@ class Theme {
                 mermaid
                     .render('mermaid-svg-' + $mermaid.id, definition)
                     .then(({ svg }) => {
+                        // innerHTML is safe here: `svg` is markup generated by
+                        // mermaid from the author's diagram, not external data.
                         $mermaid.innerHTML = svg;
                     })
                     .catch(err => {
@@ -767,11 +798,10 @@ class Theme {
 
             if (this.config.comment.remark42) {
                 this._remark42OnSwitchTheme = this._remark42OnSwitchTheme || (() => {
-                    if (this.isDark) {
-                        window.REMARK42.changeTheme('dark');
-                    } else {
-                        window.REMARK42.changeTheme('light');
-                    }
+                    // embed.js is deferred and may be blocked; bail if the API
+                    // is not ready instead of throwing on an early theme toggle.
+                    if (typeof window.REMARK42?.changeTheme !== 'function') return;
+                    window.REMARK42.changeTheme(this.isDark ? 'dark' : 'light');
                 });
                 this.switchThemeEventSet.add(this._remark42OnSwitchTheme);
             }
@@ -825,7 +855,7 @@ class Theme {
             }
             for (let event of this.scrollEventSet) event();
             this.oldScrollTop = this.newScrollTop;
-        }, false);
+        }, { passive: true });
     }
 
     onResize() {
@@ -847,17 +877,35 @@ class Theme {
         if (!btn) return;
 
         const SHOW_THRESHOLD = 300;
+        const RESET_FALLBACK = 800;
         let savedPosition = 0;
         let isBack = false;
         let programmaticScroll = false;
+        let resetTimer = null;
 
         const updateVisibility = () => {
             btn.classList.toggle('visible',
                 Util.getScrollTop() > SHOW_THRESHOLD || isBack);
         };
 
+        // Release the guard once the smooth scroll settles. scrollend is
+        // unsupported on older Safari/iOS and does not fire when scrollTo()
+        // does not move the page, so a timer backs it up. Without this the
+        // guard could latch on forever and freeze the scroll callback.
+        const endProgrammaticScroll = () => {
+            if (!programmaticScroll) return;
+            programmaticScroll = false;
+            if (resetTimer) { clearTimeout(resetTimer); resetTimer = null; }
+            updateVisibility();
+        };
+
+        // Registered once: user-driven scrollend is a no-op (guard is false).
+        window.addEventListener('scrollend', endProgrammaticScroll);
+
         btn.addEventListener('click', () => {
             programmaticScroll = true;
+            if (resetTimer) clearTimeout(resetTimer);
+            resetTimer = window.setTimeout(endProgrammaticScroll, RESET_FALLBACK);
 
             if (isBack) {
                 window.scrollTo({ top: savedPosition, behavior: 'smooth' });
@@ -869,11 +917,6 @@ class Theme {
                 isBack = true;
                 btn.classList.add('is-back');
             }
-
-            window.addEventListener('scrollend', () => {
-                programmaticScroll = false;
-                updateVisibility();
-            }, { once: true });
         });
 
         this.scrollEventSet.add(() => {
