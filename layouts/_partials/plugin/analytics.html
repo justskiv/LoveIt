@@ -41,18 +41,31 @@
 
 {{- /* Yandex Metrica */ -}}
 {{- with $analytics.yandexMetrica.id -}}
+    {{- $respectDoNotTrack := $analytics.yandexMetrica.respectDoNotTrack | default true -}}
     <script>
-       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-       m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+       var doNotTrack = false;
+       if ({{ $respectDoNotTrack }}) {
+           var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+           var doNotTrack = (dnt == "1" || dnt == "yes");
+       }
+       if (!doNotTrack) {
+           (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+           m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+           (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-       ym({{ . }}, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true
-       });
+           ym({{ . }}, "init", {
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true
+           });
+       }
     </script>
+    {{- /* The noscript pixel cannot honour DNT (no JS to read it), so with */ -}}
+    {{- /* respectDoNotTrack on (default) we do not emit it; render it only */ -}}
+    {{- /* when DNT respect is explicitly disabled. */ -}}
+    {{- if not $respectDoNotTrack -}}
     <noscript><div><img src="https://mc.yandex.ru/watch/{{ . }}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    {{- end -}}
 {{- end -}}
 
 {{- /* Goat Counter */ -}}
