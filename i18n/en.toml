@@ -85,6 +85,24 @@ other = "Cancel"
 [noResultsFound]
 other = "No results found"
 
+[searchHighlightLabel]
+other = "Search highlights"
+
+[searchHighlightClear]
+other = "Clear highlights"
+
+[searchFilters]
+other = "Filters"
+
+[searchFiltersReset]
+other = "Reset"
+
+[searchFiltersMore]
+other = "More"
+
+[searchFiltersLess]
+other = "Less"
+
 [lunrLanguageCode]
 other = "en"
 

@@ -41,10 +41,33 @@
         {{- end -}}
     {{- else if eq $search.type "pagefind" -}}
         {{- $basePath := "/_pagefind/" -}}
+        {{- $pfFilters := slice -}}
         {{- with $search.pagefind -}}
             {{- $basePath = .basePath | default "/_pagefind/" -}}
+            {{- with .filters -}}
+                {{- $pfFilters = . -}}
+            {{- end -}}
         {{- end -}}
-        {{- $config = dict "type" "pagefind" "pagefindBasePath" $basePath | dict "search" | merge $config -}}
+        {{- /* Localized labels per filter name; JS falls back to the raw name. */ -}}
+        {{- $pfLabels := dict -}}
+        {{- range $pfFilters -}}
+            {{- $label := . -}}
+            {{- if eq . "category" -}}{{- $label = T "categories" -}}{{- end -}}
+            {{- if eq . "tag" -}}{{- $label = T "tags" -}}{{- end -}}
+            {{- $pfLabels = merge $pfLabels (dict . $label) -}}
+        {{- end -}}
+        {{- $config = dict
+            "type" "pagefind"
+            "pagefindBasePath" $basePath
+            "highlightLabel" (T "searchHighlightLabel")
+            "highlightClear" (T "searchHighlightClear")
+            "pagefindFilters" $pfFilters
+            "pagefindFilterLabels" $pfLabels
+            "pagefindFiltersLabel" (T "searchFilters")
+            "pagefindFilterResetLabel" (T "searchFiltersReset")
+            "pagefindFilterMoreLabel" (T "searchFiltersMore")
+            "pagefindFilterLessLabel" (T "searchFiltersLess")
+            | dict "search" | merge $config -}}
     {{- end -}}
 {{- end -}}
 

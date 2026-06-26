@@ -56,7 +56,7 @@
                 {{- range $index, $value := . -}}
                     {{- if gt $index 0 }},&nbsp;{{ end -}}
                     {{- $tag := partialCached "function/path.html" $value $value | printf "/tags/%v" | $.Site.GetPage -}}
-                    <a href="{{ $tag.RelPermalink }}">{{ $tag.Title }}</a>
+                    <a href="{{ $tag.RelPermalink }}" data-pagefind-filter="tag">{{ $tag.Title }}</a>
                 {{- end -}}
             {{- end -}}
         </section>

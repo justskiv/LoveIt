@@ -86,6 +86,24 @@ other = "Отменить"
 [noResultsFound]
 other = "Результатов не найдено"
 
+[searchHighlightLabel]
+other = "Подсветка из поиска"
+
+[searchHighlightClear]
+other = "Убрать подсветку"
+
+[searchFilters]
+other = "Фильтры"
+
+[searchFiltersReset]
+other = "Сбросить"
+
+[searchFiltersMore]
+other = "Ещё"
+
+[searchFiltersLess]
+other = "Свернуть"
+
 [lunrLanguageCode]
 other = "ru"
 

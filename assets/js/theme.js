@@ -116,6 +116,12 @@ class Theme {
         // attributes or extra markup into the DOM, whatever the config holds.
         const rawHighlightTag = searchConfig.highlightTag ? searchConfig.highlightTag : 'em';
         const highlightTag = /^[a-zA-Z0-9]+$/.test(rawHighlightTag) ? rawHighlightTag : 'em';
+        // --- Faceted filtering (Pagefind only). Driven entirely by config:
+        // searchConfig.pagefindFilters is the list of data-pagefind-filter
+        // names to expose; empty/absent => feature off. ---
+        const filterNames = Array.isArray(searchConfig.pagefindFilters)
+            ? searchConfig.pagefindFilters : [];
+        const filtersEnabled = searchConfig.type === 'pagefind' && filterNames.length > 0;
         // Neutral sentinels for the Algolia path (no markup in the request).
         const ALGOLIA_HL_PRE = '__LOVEIT_HL__';
         const ALGOLIA_HL_POST = '__/LOVEIT_HL__';
@@ -182,16 +188,147 @@ class Theme {
             if ($searchInput.value === '') $searchClear.style.display = 'none';
             else $searchClear.style.display = 'inline';
         }, false);
+        // Esc closes the search like clicking the backdrop: drop focus,
+        // collapse the field and clear the query.
+        $searchInput.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape' && e.key !== 'Esc') return;
+            const autosearch = isMobile ? this._searchMobile : this._searchDesktop;
+            autosearch && autosearch.autocomplete.setVal('');
+            $searchClear.style.display = 'none';
+            $searchLoading.style.display = 'none';
+            $header.classList.remove('open');
+            document.body.classList.remove('blur');
+            $searchInput.blur();
+        }, false);
 
         const initAutosearch = () => {
-            const autosearch = autocomplete(`#search-input-${suffix}`, {
+            // Per-instance facet state (desktop and mobile are independent).
+            const facetSelected = {};
+            filterNames.forEach((name) => { facetSelected[name] = new Set(); });
+            const facetLabels = searchConfig.pagefindFilterLabels || {};
+            const facetMinValues = 2;                 // hide groups that can't narrow
+            let lastFacetCounts = { filters: {}, total: {} };
+            let facetRerun = null;                    // set by source(); re-runs search
+
+            // Same key + many values => OR (any); different keys => AND.
+            const buildPagefindFilters = () => {
+                const out = {};
+                filterNames.forEach((name) => {
+                    const vals = Array.from(facetSelected[name] || []);
+                    if (vals.length === 1) out[name] = vals[0];
+                    else if (vals.length > 1) out[name] = { any: vals };
+                });
+                return Object.keys(out).length ? out : undefined;
+            };
+
+            // Rebuild the facet UI from the latest search counts. Collapsed by
+            // default: a thin bar with a "Filters" toggle + active-count badge.
+            // When collapsed but filters are active, the selected chips + reset
+            // stay visible; the full (dense) group panel appears only on toggle.
+            // All values reach the DOM via textContent / setAttribute only.
+            const renderFacets = (filters, totalFilters) => {
+                if (!filtersEnabled) return;
+                const $facets = document.getElementById(`search-facets-${suffix}`);
+                if (!$facets) return;
+                filters = filters || {};
+                totalFilters = totalFilters || {};
+                while ($facets.firstChild) $facets.removeChild($facets.firstChild);
+
+                // Collect the groups worth showing, keeping the original
+                // value-picking logic (selected, or still narrowing results).
+                const groups = [];
+                let selectedCount = 0;
+                filterNames.forEach((name) => {
+                    const universe = totalFilters[name] || filters[name] || {};
+                    const counts = filters[name] || {};
+                    const sel = facetSelected[name] || new Set();
+                    selectedCount += sel.size;
+                    const values = new Set(Object.keys(universe));
+                    sel.forEach((v) => values.add(v));
+                    let list = Array.from(values).filter(
+                        (v) => sel.has(v) || (counts[v] || universe[v] || 0) > 0);
+                    if (!list.length) return;
+                    if (list.length < facetMinValues && sel.size === 0) return;
+                    list.sort((a, b) => {
+                        const sa = sel.has(a) ? 1 : 0, sb = sel.has(b) ? 1 : 0;
+                        if (sa !== sb) return sb - sa;
+                        const ca = counts[a] || 0, cb = counts[b] || 0;
+                        if (ca !== cb) return cb - ca;
+                        return a.localeCompare(b);
+                    });
+                    groups.push({ name, list, counts, sel });
+                });
+
+                if (!groups.length) { $facets.hidden = true; return; }
+                $facets.hidden = false;
+
+                const makeChip = (name, value, count, isOn) => {
+                    const $chip = document.createElement('button');
+                    $chip.type = 'button';
+                    $chip.className = 'search-facet-chip';
+                    $chip.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+                    $chip.dataset.facetName = name;
+                    $chip.dataset.facetValue = value;
+                    if (!isOn && count === 0) $chip.disabled = true;
+                    const $text = document.createElement('span');
+                    $text.className = 'search-facet-chip-text';
+                    $text.textContent = value;
+                    $chip.appendChild($text);
+                    const $count = document.createElement('span');
+                    $count.className = 'search-facet-chip-count';
+                    $count.textContent = String(count);
+                    $chip.appendChild($count);
+                    return $chip;
+                };
+                const makeReset = () => {
+                    const $reset = document.createElement('button');
+                    $reset.type = 'button';
+                    $reset.className = 'search-facet-reset';
+                    $reset.dataset.facetReset = '1';
+                    $reset.textContent =
+                        searchConfig.pagefindFilterResetLabel || 'Reset';
+                    return $reset;
+                };
+
+                // Aligned grid: every group is a [label | chips] row, so the
+                // category and tag labels share a column and chips line up.
+                // All values are shown; chips wrap within their cell.
+                groups.forEach(({ name, list, counts, sel }) => {
+                    const $group = document.createElement('div');
+                    $group.className = 'search-facet-group';
+                    const $label = document.createElement('span');
+                    $label.className = 'search-facet-label';
+                    $label.textContent = facetLabels[name] || name;
+                    $group.appendChild($label);
+                    const $chips = document.createElement('div');
+                    $chips.className = 'search-facet-chips';
+                    list.forEach((value) => {
+                        $chips.appendChild(
+                            makeChip(name, value, counts[value] || 0, sel.has(value)));
+                    });
+                    $group.appendChild($chips);
+                    $facets.appendChild($group);
+                });
+
+                if (selectedCount) $facets.appendChild(makeReset());
+            };
+
+            const acOptions = {
                 hint: false,
                 autoselect: true,
                 dropdownMenuContainer: `#search-dropdown-${suffix}`,
                 clearOnSelected: true,
                 cssClasses: { noPrefix: true },
                 debug: true,
-            }, {
+            };
+            if (filtersEnabled) {
+                // Menu-level header is rendered ONCE into the dropdown $menu
+                // (not per keystroke): a stable mount point for the facet chips.
+                acOptions.templates = {
+                    header: () => `<div class="search-facets" id="search-facets-${suffix}" hidden></div>`,
+                };
+            }
+            const autosearch = autocomplete(`#search-input-${suffix}`, acOptions, {
                 name: 'search',
                 source: (query, callback) => {
                     $searchLoading.style.display = 'inline';
@@ -365,54 +502,147 @@ class Theme {
                                 });
                         } else finish(search());
                     } else if (searchConfig.type === 'pagefind') {
+                        // Pagefind excerpts arrive as plain text with <mark> tags
+                        // around matches. Escape everything, then convert Pagefind's
+                        // <mark> into the configured highlightTag, so the only markup
+                        // emitted is the highlight tag (never raw HTML from data).
+                        const renderExcerpt = (raw) => String(raw || '')
+                            .split(/(<\/?mark>)/)
+                            .map(part => part === '<mark>' ? `<${highlightTag}>`
+                                : part === '</mark>' ? `</${highlightTag}>`
+                                : escapeHTML(part))
+                            .join('');
+                        // Pagefind excerpts open at the section/page start, so the
+                        // matched <mark> can fall past the dropdown's 2-line clamp.
+                        // Slide the window to begin just before the first match so
+                        // the highlighted term is always visible.
+                        const focusExcerpt = (raw) => {
+                            const s = String(raw || '');
+                            const i = s.indexOf('<mark>');
+                            const lead = 24;
+                            if (i <= lead) return s;
+                            let cut = s.lastIndexOf(' ', i - lead);
+                            if (cut < 0) cut = i - lead;
+                            return '…' + s.slice(cut + 1);
+                        };
                         const search = async () => {
                             try {
                                 if (!this._pagefind) {
                                     const basePath = searchConfig.pagefindBasePath || '/_pagefind/';
                                     this._pagefind = await import(`${basePath}pagefind.js`);
                                     await this._pagefind.init();
+                                    // Load the filter universe once so every search
+                                    // response carries per-filter counts.
+                                    if (filtersEnabled && this._pagefind.filters) {
+                                        try { await this._pagefind.filters(); }
+                                        catch (e) { console.error(e); }
+                                    }
                                 }
-                                const searchResult = await this._pagefind.search(query);
-                                const results = {};
+                                const opts = {};
+                                if (filtersEnabled) {
+                                    const f = buildPagefindFilters();
+                                    if (f) opts.filters = f;
+                                }
+                                const searchResult = await this._pagefind.search(query, opts);
+                                if (filtersEnabled) {
+                                    lastFacetCounts = {
+                                        filters: searchResult.filters || {},
+                                        total: searchResult.totalFilters || {},
+                                    };
+                                    renderFacets(lastFacetCounts.filters, lastFacetCounts.total);
+                                }
                                 const loaded = await Promise.all(
                                     searchResult.results.slice(0, maxResultLength).map(r => r.data())
                                 );
-                                loaded.forEach(item => {
-                                    const uri = item.url;
-                                    if (results[uri]) return;
-                                    let title = item.meta?.title || '';
-                                    let context = item.excerpt || item.content || '';
-                                    context = context.slice(0, snippetLength);
-                                    title = escapeHTML(title);
-                                    context = escapeHTML(context);
-                                    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                    title = title.replace(new RegExp(`(${escapedQuery})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
-                                    context = context.replace(new RegExp(`(${escapedQuery})`, 'gi'), `<${highlightTag}>$1</${highlightTag}>`);
-                                    results[uri] = { uri, title, date: '', context };
+                                // Carry the visitor's query into the result URL as
+                                // `?highlight=`, keeping any section anchor after it
+                                // (`/posts/x/?highlight=...#section`) so the landing
+                                // page can highlight matches and still scroll to the
+                                // heading. The query is URL-encoded, never injected
+                                // as markup.
+                                const withHighlight = (url, term) => {
+                                    term = term || query;
+                                    if (!term) return url;
+                                    const hashIndex = url.indexOf('#');
+                                    const hash = hashIndex >= 0 ? url.slice(hashIndex) : '';
+                                    const base = hashIndex >= 0 ? url.slice(0, hashIndex) : url;
+                                    const sep = base.indexOf('?') >= 0 ? '&' : '?';
+                                    return `${base}${sep}highlight=${encodeURIComponent(term)}${hash}`;
+                                };
+                                // Pagefind matches by RU stem, but pagefind-highlight
+                                // on the landing page is literal — so highlight the
+                                // actual matched word from the excerpt (e.g. the
+                                // variant "объяснением"), not the raw stem query, or
+                                // the variant won't get marked. Tiny prefixes fall
+                                // back to the query to avoid page-wide noise.
+                                const matchedTerm = (raw) => {
+                                    const m = String(raw || '').match(/<mark>(.*?)<\/mark>/);
+                                    if (!m) return '';
+                                    const word = m[1].replace(
+                                        /^[^0-9A-Za-zА-Яа-яЁё]+|[^0-9A-Za-zА-Яа-яЁё]+$/g, '');
+                                    return word.length >= 4 ? word : '';
+                                };
+                                // One entry per page. Pick the section whose excerpt
+                                // actually contains the match (has a <mark>): show
+                                // that section's snippet and link to its heading, so
+                                // the dropdown shows the matched term and a click
+                                // lands on the relevant section. Fall back to the
+                                // page-level excerpt/URL when the match isn't under a
+                                // heading (e.g. the intro).
+                                const results = loaded.map(item => {
+                                    const subs = item.sub_results || [];
+                                    const hit = subs.find(s => /<mark>/.test(s.excerpt || ''));
+                                    const raw = hit ? hit.excerpt : item.excerpt;
+                                    return {
+                                        uri: withHighlight(hit ? hit.url : item.url, matchedTerm(raw)),
+                                        title: escapeHTML(item.meta?.title || ''),
+                                        date: item.meta?.date || '',
+                                        context: renderExcerpt(focusExcerpt(raw)),
+                                    };
                                 });
-                                finish(Object.values(results));
+                                finish(results);
                             } catch (err) {
                                 console.error(err);
                                 finish([]);
                             }
                         };
+                        // Expose a re-run bound to this query+callback so a facet
+                        // toggle refreshes results AND counts without a keystroke
+                        // (autocomplete dedupes identical queries).
+                        facetRerun = () => { $searchLoading.style.display = 'inline'; search(); };
                         search();
                     }
                 },
                 templates: {
                     suggestion: ({ title, date, context }) => `<div><span class="suggestion-title">${title}</span><span class="suggestion-date">${escapeHTML(date)}</span></div><div class="suggestion-context">${context}</div>`,
                     empty: ({ query }) => `<div class="search-empty">${searchConfig.noResultsFound}: <span class="search-query">"${escapeHTML(query)}"</span></div>`,
-                    footer: ({}) => {
-                        const searchTypes = {
-                            algolia: { searchType: 'algolia', icon: '<i class="fab fa-algolia" aria-hidden="true"></i>', href: 'https://www.algolia.com/' },
-                            lunr: { searchType: 'Lunr.js', icon: '', href: 'https://lunrjs.com/' },
-                            fuse: { searchType: 'Fuse.js', icon: '', href: 'https://www.fusejs.io/' },
-                            pagefind: { searchType: 'Pagefind', icon: '', href: 'https://pagefind.app/' },
-                        };
-                        const { searchType, icon, href } = searchTypes[searchConfig.type] || searchTypes.lunr;
-                        return `<div class="search-footer">Search by <a href="${href}" rel="noopener noreferrer" target="_blank">${icon} ${searchType}</a></div>`;},
                 },
             });
+            if (filtersEnabled) {
+                const $facets = document.getElementById(`search-facets-${suffix}`);
+                if ($facets) {
+                    $facets.setAttribute('role', 'group');
+                    $facets.setAttribute('aria-label',
+                        searchConfig.pagefindFiltersLabel || 'Filters');
+                    // One delegated listener on the persistent header survives
+                    // the per-search re-render of its chip children.
+                    $facets.addEventListener('click', (e) => {
+                        const chip = e.target.closest('[data-facet-value]');
+                        if (chip && !chip.disabled) {
+                            const name = chip.dataset.facetName;
+                            const value = chip.dataset.facetValue;
+                            const set = facetSelected[name] || (facetSelected[name] = new Set());
+                            if (set.has(value)) set.delete(value); else set.add(value);
+                            if (facetRerun) facetRerun();
+                            return;
+                        }
+                        if (e.target.closest('[data-facet-reset]')) {
+                            filterNames.forEach((n) => facetSelected[n] && facetSelected[n].clear());
+                            if (facetRerun) facetRerun();
+                        }
+                    }, false);
+                }
+            }
             autosearch.on('autocomplete:selected', (_event, suggestion, _dataset, _context) => {
                 window.location.assign(suggestion.uri);
             });
@@ -438,6 +668,132 @@ class Theme {
             }
             document.body.appendChild(script);
         } else initAutosearch();
+    }
+
+    // Highlight-on-landing: when the visitor arrives from a Pagefind search
+    // result (URL carries `?highlight=`), load the official pagefind-highlight
+    // bundle, wrap matches in <mark class="pagefind-highlight">, and show a
+    // dismissible banner to clear the highlighting again.
+    initSearchHighlight() {
+        const searchConfig = this.config.search;
+        if (!searchConfig || searchConfig.type !== 'pagefind') return;
+        let terms;
+        try {
+            terms = new URLSearchParams(window.location.search).getAll('highlight');
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+        if (!terms.some(t => t)) return; // nothing to highlight: skip the script
+
+        const basePath = searchConfig.pagefindBasePath || '/_pagefind/';
+        import(`${basePath}pagefind-highlight.js`)
+            .then(({ default: PagefindHighlight }) => {
+                // Marks get our own class so the SCSS theme (incl. dark mode)
+                // styles them; addStyles:false suppresses the bundle's inline
+                // yellow default.
+                new PagefindHighlight({ highlightParam: 'highlight', addStyles: false });
+                const marks = document.querySelectorAll('mark.pagefind-highlight');
+                if (marks.length === 0) {
+                    // Query matched the page in the index but not in the rendered
+                    // body (e.g. only in a heading already scrolled to): drop the
+                    // stale param so a refresh stays clean.
+                    this._clearHighlightParam();
+                    return;
+                }
+                this._mountHighlightBanner();
+                this._scrollToFirstMatch(marks[0]);
+            })
+            .catch(err => { console.error(err); });
+    }
+
+    _clearHighlightParam() {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('highlight');
+            window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+        } catch (err) { console.error(err); }
+    }
+
+    // The browser lands on the in-page anchor (#section) at load; a match can
+    // sit far below that heading, off-screen. Once pagefind-highlight has
+    // wrapped the marks, glide the first one to the viewport centre so the
+    // visitor ends up on the actual word, not the section title. The `#section`
+    // anchor is kept in the URL for semantics — only the visual position moves.
+    _scrollToFirstMatch($mark) {
+        if (!$mark) return;
+        let reduce = false;
+        try {
+            reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (err) { /* matchMedia unsupported: keep the smooth default */ }
+        // Two rAFs: run after the freshly inserted marks are laid out and after
+        // the load-time anchor scroll has settled, so this overrides the anchor
+        // landing in one continuous motion (no jump back and forth). 'instant'
+        // is explicit because the global `scroll-behavior: smooth` would
+        // otherwise animate even with behavior:'auto'.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            try {
+                $mark.scrollIntoView({
+                    block: 'center',
+                    behavior: reduce ? 'instant' : 'smooth',
+                });
+            } catch (err) {
+                // Engines without ScrollIntoViewOptions: plain scroll.
+                $mark.scrollIntoView();
+            }
+        }));
+    }
+
+    _mountHighlightBanner() {
+        const searchConfig = this.config.search || {};
+        // i18n strings arrive pre-localized via window.config; insert them only
+        // through textContent / setAttribute, never innerHTML.
+        const labelText = searchConfig.highlightLabel || 'Search highlights';
+        const clearText = searchConfig.highlightClear || 'Clear highlights';
+
+        const $banner = document.createElement('div');
+        $banner.className = 'search-highlight-banner';
+        $banner.setAttribute('role', 'status');
+
+        const $swatch = document.createElement('span');
+        $swatch.className = 'search-highlight-banner-swatch';
+        $swatch.setAttribute('aria-hidden', 'true');
+
+        const $label = document.createElement('span');
+        $label.className = 'search-highlight-banner-label';
+        $label.textContent = labelText;
+
+        const $button = document.createElement('button');
+        $button.type = 'button';
+        $button.className = 'search-highlight-banner-clear';
+        $button.setAttribute('aria-label', clearText);
+        $button.title = clearText;
+        $button.textContent = '✕'; // ✕
+
+        $banner.appendChild($swatch);
+        $banner.appendChild($label);
+        $banner.appendChild($button);
+        document.body.appendChild($banner);
+
+        const onKeydown = (e) => {
+            if (e.key === 'Escape' || e.key === 'Esc') dismiss();
+        };
+        const dismiss = () => {
+            // Unwrap each highlight mark back into its original text nodes.
+            Util.forEach(document.querySelectorAll('mark.pagefind-highlight'), $mark => {
+                const parent = $mark.parentNode;
+                if (!parent) return;
+                while ($mark.firstChild) parent.insertBefore($mark.firstChild, $mark);
+                parent.removeChild($mark);
+                parent.normalize();
+            });
+            document.removeEventListener('keydown', onKeydown);
+            $banner.remove();
+            this._clearHighlightParam();
+        };
+
+        $button.addEventListener('click', dismiss);
+        document.addEventListener('keydown', onKeydown);
     }
 
     initDetails() {
@@ -946,6 +1302,7 @@ class Theme {
             this.initMenuMobile();
             this.initSwitchTheme();
             this.initSearch();
+            this.initSearchHighlight();
             this.initDetails();
             this.initLightGallery();
             this.initHighlight();

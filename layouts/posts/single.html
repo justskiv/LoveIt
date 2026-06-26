@@ -20,7 +20,7 @@
 
     <article class="page single">
         {{- /* Title */ -}}
-        <h1 class="single-title animate__animated animate__flipInX">{{ .Title | emojify }}</h1>
+        <h1 class="single-title animate__animated animate__flipInX" data-pagefind-meta="title">{{ .Title | emojify }}</h1>
 
         {{- /* Subtitle */ -}}
         {{- with $params.subtitle -}}
@@ -40,7 +40,7 @@
                 {{- $categories := slice -}}
                 {{- range .Params.categories -}}
                     {{- $category := partialCached "function/path.html" . . | printf "/categories/%v" | $.Site.GetPage -}}
-                    {{- $categories = $categories | append (printf `<a href="%v"><i class="far fa-folder" aria-hidden="true"></i>%v</a>` $category.RelPermalink $category.Title) -}}
+                    {{- $categories = $categories | append (printf `<a href="%v" data-pagefind-filter="category"><i class="far fa-folder" aria-hidden="true"></i>%v</a>` $category.RelPermalink $category.Title) -}}
                 {{- end -}}
                 {{- with delimit $categories "&nbsp;" -}}
                     &nbsp;<span class="post-category">
@@ -50,7 +50,7 @@
             </div>
             <div class="post-meta-line">
                 {{- with .Site.Params.dateformat | default "2006-01-02" | .PublishDate.Format -}}
-                    <i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="{{ . }}">{{ . }}</time>&nbsp;
+                    <i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time datetime="{{ . }}" data-pagefind-meta="date">{{ . }}</time>&nbsp;
                 {{- end -}}
                 <i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;{{ T "wordCount" .WordCount }}&nbsp;
                 <i class="far fa-clock" aria-hidden="true"></i>&nbsp;~{{ T "readingTimeMinutes" (partial "reading-time.html" .) }}&nbsp;
@@ -88,7 +88,7 @@
         {{- end -}}
 
         {{- /* Content */ -}}
-        <div class="content" id="content">
+        <div class="content" id="content" data-pagefind-body>
             {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
         </div>
 

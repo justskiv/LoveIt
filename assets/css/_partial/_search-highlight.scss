@@ -1,0 +1,131 @@
+// ==============================
+// Search highlight on landing
+// ==============================
+// Styles for matches highlighted when arriving from a Pagefind search
+// result (`?highlight=`), plus the dismissible banner that clears them.
+
+// Matches wrapped by pagefind-highlight.js as <mark class="pagefind-highlight">.
+// We style them here (the bundle is loaded with addStyles:false) so the
+// highlight matches the theme in both light and dark mode.
+mark.pagefind-highlight {
+  padding: 0 .12em;
+  // Cancel the horizontal padding with a matching negative margin so the
+  // highlight keeps its breathing room visually, but occupies the same
+  // inline width as the bare text — removing it (on dismiss) won't reflow
+  // or nudge the neighbouring words.
+  margin: 0 -.12em;
+  color: #161209;
+  background-color: #ffe9a3;
+  @include border-radius(.15rem);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+
+  [theme=dark] & {
+    color: #ffe9a3;
+    background-color: #5c4a12;
+  }
+}
+
+// Snackbar-style toast pinned to the bottom centre. It must read as a
+// distinct, elevated control — not as a chip blending into the article — so
+// it uses a solid surface, a clearly visible border and a layered shadow
+// rather than the near-page-tone header colour it had before.
+.search-highlight-banner {
+  z-index: 110; // above .fixed-button (100)
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 2rem);
+  padding: .5rem .5rem .5rem .85rem;
+  font-size: .875rem;
+  line-height: 1.3;
+  color: $global-font-color;
+  background: $global-background-color;
+  border: 1px solid rgba(0, 0, 0, .14);
+  @include border-radius(.625rem); // card-like, not a full content chip
+  @include box-shadow(0 8px 28px rgba(0, 0, 0, .18), 0 2px 8px rgba(0, 0, 0, .10));
+  animation: search-highlight-in .25s ease;
+
+  .search-highlight-banner-swatch {
+    flex: none;
+    width: .9rem;
+    height: .9rem;
+    margin-right: .55rem;
+    background-color: #ffe082;
+    border: 1px solid rgba(0, 0, 0, .14);
+    @include border-radius(.2rem);
+  }
+
+  .search-highlight-banner-label {
+    margin-right: .6rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 500;
+  }
+
+  .search-highlight-banner-clear {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0;
+    font-size: .95rem;
+    line-height: 1;
+    color: $global-font-color;
+    background: $search-background-color; // own surface => reads as a button
+    border: none;
+    cursor: pointer;
+    @include border-radius(50%);
+    @include transition(color .2s ease, background-color .2s ease);
+
+    &:hover, &:focus {
+      color: $global-font-color;
+      background-color: darken($search-background-color, 8%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $single-link-color;
+      outline-offset: 2px;
+    }
+  }
+
+  [theme=dark] & {
+    color: $global-font-color-dark;
+    // Lighter than the dark page background so the toast reads as elevated.
+    background: $search-background-color-dark;
+    border-color: rgba(255, 255, 255, .14);
+    @include box-shadow(0 8px 28px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .35));
+
+    .search-highlight-banner-swatch {
+      background-color: #f5d35e;
+      border-color: rgba(0, 0, 0, .35);
+    }
+
+    .search-highlight-banner-clear {
+      color: $global-font-color-dark;
+      background: rgba(255, 255, 255, .07);
+
+      &:hover, &:focus {
+        color: $global-font-color-dark;
+        background-color: rgba(255, 255, 255, .16);
+      }
+    }
+  }
+}
+
+@keyframes search-highlight-in {
+  from { opacity: 0; transform: translate(-50%, .5rem); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-highlight-banner {
+    animation: none;
+  }
+}

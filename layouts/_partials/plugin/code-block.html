@@ -3,6 +3,10 @@
 {{- $params := .Page.Scratch.Get "params" -}}
 {{- $maxShownLines := $params.code.maxShownLines | default 10 | int -}}
 {{- $copy := $params.code.copy | default true -}}
+{{- /* Pagefind: de-weight code in the search index (0.5 ~= quarter impact)
+       so prose about a term outranks code that merely mentions it. Tunable
+       via [params.code] searchWeight; set 1.0 to disable. */ -}}
+{{- $searchWeight := $params.code.searchWeight | default 0.5 -}}
 {{- $lines := split $content "\n" | len -}}
 {{- $options := dict "lineNoStart" 1 "lineNos" true -}}
 {{- $options = .Options | partial "function/dict.html" | merge $options -}}
@@ -11,7 +15,7 @@
 
 {{- $options = dict "noClasses" false "lineNos" false | merge $options -}}
 {{- $result := transform.Highlight $content $lang $options -}}
-<div class="code-block{{ if $lineNos }} code-line-numbers{{ end }}{{ if le $lines $maxShownLines }} open{{ end }}" style="counter-reset: code-block {{ sub $lineNoStart 1 }}">
+<div class="code-block{{ if $lineNos }} code-line-numbers{{ end }}{{ if le $lines $maxShownLines }} open{{ end }}" data-pagefind-weight="{{ $searchWeight }}" style="counter-reset: code-block {{ sub $lineNoStart 1 }}">
     <div class="code-header language-{{ $lang }}">
         <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>

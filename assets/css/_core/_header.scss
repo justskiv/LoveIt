@@ -366,7 +366,10 @@ header {
   @include box-shadow(0 .125rem .25rem rgba(0, 0, 0, .1));
 
   &.desktop {
-    right: 2rem;
+    // Align the right edge with the centered 1200px header container instead
+    // of pinning to the viewport edge (which drifts off to the right on wide
+    // screens). Falls back to 2rem on narrow viewports.
+    right: #{"max(2rem, calc((100vw - 1200px) / 2))"};
     width: 30rem;
   }
 
@@ -458,6 +461,115 @@ header {
         [theme=dark] & {
           color: #ddd;
         }
+      }
+    }
+
+    .search-facets {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      padding: .6rem 1rem;
+      max-height: 11rem;
+      overflow-y: auto;
+      border-bottom: 1px solid $global-border-color;
+
+      [theme=dark] & {
+        border-bottom-color: $global-border-color-dark;
+      }
+
+      &[hidden] { display: none; }
+
+      // Each group: a short muted label on its own line, chips wrapping below.
+      .search-facet-group {
+        display: flex;
+        flex-direction: column;
+        gap: .3rem;
+      }
+
+      .search-facet-label {
+        font-size: .66rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: $global-font-secondary-color;
+
+        [theme=dark] & {
+          color: $global-font-secondary-color-dark;
+        }
+      }
+
+      .search-facet-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .3rem;
+      }
+
+      .search-facet-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .3em;
+        padding: .1rem .45rem;
+        font-size: .78rem;
+        line-height: 1.45;
+        color: inherit;
+        background: transparent;
+        border: 1px solid $global-border-color;
+        border-radius: 1rem;
+        cursor: pointer;
+        transition: background-color .15s, border-color .15s, color .15s;
+
+        [theme=dark] & {
+          border-color: $global-border-color-dark;
+        }
+
+        &:hover {
+          border-color: $single-link-color;
+
+          [theme=dark] & {
+            border-color: $single-link-color-dark;
+          }
+        }
+
+        &[aria-pressed="true"] {
+          color: #fff;
+          background: $single-link-color;
+          border-color: $single-link-color;
+
+          [theme=dark] & {
+            background: $single-link-color-dark;
+            border-color: $single-link-color-dark;
+          }
+        }
+
+        &:disabled {
+          opacity: .4;
+          cursor: default;
+        }
+
+        &:focus-visible {
+          outline: 2px solid $single-link-color;
+          outline-offset: 1px;
+        }
+
+        .search-facet-chip-count {
+          font-size: .72rem;
+          opacity: .6;
+        }
+      }
+
+      .search-facet-reset {
+        align-self: flex-start;
+        padding: 0;
+        font-size: .74rem;
+        color: $single-link-color;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+
+        [theme=dark] & { color: $single-link-color-dark; }
+
+        &:hover { text-decoration: underline; }
+        &:focus-visible { outline: 2px solid $single-link-color; outline-offset: 1px; }
       }
     }
 
