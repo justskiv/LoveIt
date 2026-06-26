@@ -15,3 +15,19 @@ img {
 .content img.lazyload:not([width]) {
   min-height: 12rem;
 }
+
+// Dark mode images: dim, then reveal full brightness on hover.
+// Gate on (hover: hover) so this only runs on pointer devices. On
+// touch screens there is no hover to undo the dimming, so images
+// would stay dark forever — leave them at full brightness there.
+// Lightgallery overlay (.lg-object) is excluded from dimming.
+@media (hover: hover) {
+  [theme=dark] img:not(.lg-object) {
+    filter: brightness(0.5);
+    transition: filter .6s ease-out;
+  }
+
+  [theme=dark] img:not(.lg-object):hover {
+    filter: none;
+  }
+}
